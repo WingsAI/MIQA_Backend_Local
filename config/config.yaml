@@ -1,0 +1,55 @@
+# Backend Local MIQA - Configuração
+
+# Identificação do dispositivo
+device_id: "hospital-device-001"
+
+# Modo de operação
+# AUTO: decide automaticamente online/offline baseado em conectividade
+# FORCED_OFFLINE: sempre offline, nunca tenta enviar para nuvem
+mode: "AUTO"
+
+# Diretórios
+directories:
+  watch: "./watch"        # Pasta monitorada para novas imagens
+  results: "./results"    # Resultados de processamento local
+  temp: "./temp"         # Arquivos temporários
+
+# Banco de dados
+database:
+  path: "./db/miqa.db"
+
+# Cloud (API de produção)
+cloud:
+  enabled: true
+  api_url: "https://miqaback-production.up.railway.app"
+  healthcheck_url: "https://miqaback-production.up.railway.app/health"
+  healthcheck_interval: 10  # segundos
+  healthcheck_timeout: 3    # segundos
+  upload_timeout: 30        # segundos
+  max_retries: 3
+  retry_backoff: 2.0        # multiplicador exponencial
+
+# Connectivity Manager
+connectivity:
+  offline_threshold: 3      # falhas consecutivas para marcar OFFLINE
+  online_threshold: 3       # sucessos consecutivos para marcar ONLINE
+  degraded_latency_ms: 1000 # latência para marcar DEGRADED
+
+# Workers
+workers:
+  cloud_worker_interval: 5  # segundos entre verificações
+  local_worker_interval: 5  # segundos entre verificações
+  max_concurrent_uploads: 5
+  max_concurrent_processing: 2
+
+# File stability (proteção contra arquivo parcial)
+file_stability:
+  checks: 5                 # número de verificações
+  interval: 1.0             # segundos entre verificações
+  timeout: 30               # timeout máximo em segundos
+
+# Logging
+logging:
+  level: "INFO"             # DEBUG, INFO, WARNING, ERROR
+  format: "json"            # json ou text
+  file: "./logs/miqa.log"
