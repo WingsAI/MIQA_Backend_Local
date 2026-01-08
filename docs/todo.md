@@ -201,33 +201,33 @@
 ---
 
 ## ✅ Tarefa 7: Local Worker
-**Status:** 🔴 Pendente
+**Status:** Concluído
 
-- [ ] 7.1 Copiar código de processamento do projeto principal
-  - [ ] Copiar de: `fadex_medicina_projeto1/src/ml/`
-  - [ ] Colar em: `Backend_local/local_processing/`
-  - [ ] Arquivos necessários:
-    - [ ] `scoring/miqa_core.py`
-    - [ ] `scoring/wingsai_core.py`
-    - [ ] `scoring/heuristics/` (pasta completa)
-    - [ ] `scoring/preprocessing/` (pasta completa)
+- [x] 7.1 Copiar código de processamento do projeto principal
+  - [x] Copiar de: `fadex_medicina_projeto1/src/ml/`
+  - [x] Colar em: `Backend_local/local_processing/`
+  - [x] Arquivos copiados:
+    - [x] `scoring/miqa_core.py`
+    - [x] `scoring/wingsai_core.py`
+    - [x] `scoring/heuristics/` (pasta completa)
+    - [x] `scoring/preprocessing/` (pasta completa)
 
-- [ ] 7.2 Criar interface de processamento
-  - [ ] Função: `process_local(path: str, meta: dict) -> dict`
-  - [ ] Retornar: `{"score": float, "features": dict, "status": str}`
+- [x] 7.2 Criar interface de processamento
+  - [x] Função: `process_local(path: str, meta: dict) -> dict`
+  - [x] Retornar: `{"score": float, "features": dict, "status": str}`
 
-- [ ] 7.3 Implementar seleção de itens
-  - [ ] Condição: `connectivity_state != 'ONLINE'` OU `mode == 'FORCED_OFFLINE'`
-  - [ ] Query: `local_status = 'PENDING' AND locked_until < now()`
+- [x] 7.3 Implementar seleção de itens
+  - [x] Condição: `connectivity_state != 'ONLINE'` OU `mode == 'FORCED_OFFLINE'`
+  - [x] Query: `local_status = 'PENDING' AND locked_until < now()`
 
-- [ ] 7.4 Persistir resultado local
-  - [ ] Salvar JSON em: `results/{item_uid}.json`
-  - [ ] Atualizar SQLite: `local_result_path`, `local_status='DONE'`
+- [x] 7.4 Persistir resultado local
+  - [x] Salvar JSON em: `results/{item_uid}.json`
+  - [x] Atualizar SQLite: `local_result_path`, `local_status='DONE'`
 
-- [ ] 7.5 Política de reconciliação
-  - [ ] Opção 1: "local é definitivo" - não enviar para nuvem depois
-  - [ ] Opção 2: "enviar para nuvem depois" - setar `cloud_status='PENDING'` quando voltar online
-  - [ ] **Decisão:** Implementar Opção 2 (enviar para nuvem quando voltar)
+- [x] 7.5 Política de reconciliação
+  - [x] Opção 1: "local é definitivo" - não enviar para nuvem depois
+  - [x] Opção 2: "enviar para nuvem depois" - setar `cloud_status='PENDING'` quando voltar online
+  - [x] **Decisão:** Implementar Opção 2 (enviar para nuvem quando voltar)
 
 ---
 

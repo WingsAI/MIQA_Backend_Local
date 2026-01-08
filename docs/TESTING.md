@@ -565,11 +565,11 @@ worker = LocalWorker(config)
 from db.repository import QueueRepository
 repo = QueueRepository(config['database']['path'])
 
-repo.upsert_item('test-local-1', 'watch/test.jpg', 'LISTENER', {'modality': 'mri'})
-
+repo.upsert_item('test-local-1', 'watch/test_image.jpg', 'LISTENER', {'modality': 'mri'})
+"
 # Processar
 # (worker.run() é bloqueante, então testar manualmente)
-"
+
 ```
 
 **Status:** ⏳ PENDENTE
