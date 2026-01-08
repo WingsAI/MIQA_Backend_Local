@@ -5,48 +5,48 @@
 ---
 
 ## ✅ Tarefa 1: Bootstrap do Projeto
-**Status:** 🔴 Pendente
+**Status:** Concluído
 
-- [ ] 1.1 Criar estrutura de pastas
-  - [ ] `edge/` - Detecção e ingestão de imagens
-  - [ ] `cloud_client/` - Cliente HTTP para nuvem
-  - [ ] `local_processing/` - Processamento offline (código do projeto principal)
-  - [ ] `metrics/` - Sistema de métricas
-  - [ ] `db/` - SQLite e migrations
-  - [ ] `config/` - Arquivos de configuração
-  - [ ] `tests/` - Testes unitários
+- [x] 1.1 Criar estrutura de pastas
+  - [x] `edge/` - Detecção e ingestão de imagens
+  - [x] `cloud_client/` - Cliente HTTP para nuvem
+  - [x] `local_processing/` - Processamento offline (código do projeto principal)
+  - [x] `metrics/` - Sistema de métricas
+  - [x] `db/` - SQLite e migrations
+  - [x] `config/` - Arquivos de configuração
+  - [x] `tests/` - Testes unitários
 
-- [ ] 1.2 Configurar pip e requirements.txt
-  - [ ] Travar versões das dependências
-  - [ ] Incluir: `watchdog`, `httpx`, `pydantic`, `alembic`
+- [x] 1.2 Configurar pip e requirements.txt
+  - [x] Travar versões das dependências
+  - [x] Incluir: `watchdog`, `httpx`, `pydantic`, `alembic`
 
-- [ ] 1.3 Criar arquivo de configuração (config.yaml)
-  - [ ] Perfil `AUTO` - decide automaticamente online/offline
-  - [ ] Perfil `FORCED_OFFLINE` - sempre offline
+- [x] 1.3 Criar arquivo de configuração (config.yaml)
+  - [x] Perfil `AUTO` - decide automaticamente online/offline
+  - [x] Perfil `FORCED_OFFLINE` - sempre offline
 
-- [ ] 1.4 Criar CLI (main.py)
-  - [ ] Comando: `listener` - monitora pasta
-  - [ ] Comando: `dicom_receiver` - recebe DICOM (stub)
-  - [ ] Comando: `connectivity_manager` - gerencia estado de rede
-  - [ ] Comando: `cloud_worker` - envia para nuvem
-  - [ ] Comando: `local_worker` - processa localmente
-  - [ ] Comando: `metrics_exporter` - exporta métricas
+- [x] 1.4 Criar CLI (main.py)
+  - [x] Comando: `listener` - monitora pasta
+  - [x] Comando: `dicom_receiver` - recebe DICOM (stub)
+  - [x] Comando: `connectivity_manager` - gerencia estado de rede
+  - [x] Comando: `cloud_worker` - envia para nuvem
+  - [x] Comando: `local_worker` - processa localmente
+  - [x] Comando: `metrics_exporter` - exporta métricas
 
-- [ ] 1.5 Configurar logging estruturado (JSON)
-  - [ ] Incluir `device_id` em todos os logs
-  - [ ] Incluir `item_uid` quando aplicável
-  - [ ] Formato: `{"timestamp": "...", "level": "...", "device_id": "...", "message": "..."}`
+- [x] 1.5 Configurar logging estruturado (JSON)
+  - [x] Incluir `device_id` em todos os logs
+  - [x] Incluir `item_uid` quando aplicável
+  - [x] Formato: `{"timestamp": "...", "level": "...", "device_id": "...", "message": "..."}`
 
 ---
 
 ## ✅ Tarefa 2: Modelo de Dados SQLite
-**Status:** 🔴 Pendente
+**Status:** Concluído
 
-- [ ] 2.1 Criar schema SQLite
-  - [ ] Script de migrations simples (versão)
-  - [ ] Arquivo: `db/migrations/001_initial.sql`
+- [x] 2.1 Criar schema SQLite
+  - [x] Script de migrations simples (versão)
+  - [x] Arquivo: `db/migrations/001_initial.sql`
 
-- [ ] 2.2 Criar tabela `queue_items`
+- [x] 2.2 Criar tabela `queue_items`
   ```sql
   - item_uid (TEXT UNIQUE PRIMARY KEY)
   - path (TEXT NOT NULL)
@@ -67,24 +67,24 @@
   - updated_at (TIMESTAMP)
   ```
 
-- [ ] 2.3 Criar repositório (db/repository.py)
-  - [ ] `upsert_item(item_uid, path, source_type, meta)`
-  - [ ] `get_pending_cloud()` - retorna itens para enviar
-  - [ ] `get_pending_local()` - retorna itens para processar localmente
-  - [ ] `mark_cloud_uploading(item_uid, locked_until)`
-  - [ ] `mark_cloud_uploaded(item_uid)`
-  - [ ] `mark_cloud_failed(item_uid, error, next_retry)`
-  - [ ] `mark_local_processing(item_uid, locked_until)`
-  - [ ] `mark_local_done(item_uid, result_path)`
-  - [ ] `mark_local_failed(item_uid, error)`
+- [x] 2.3 Criar repositório (db/repository.py)
+  - [x] `upsert_item(item_uid, path, source_type, meta)`
+  - [x] `get_pending_cloud()` - retorna itens para enviar
+  - [x] `get_pending_local()` - retorna itens para processar localmente
+  - [x] `mark_cloud_uploading(item_uid, locked_until)`
+  - [x] `mark_cloud_uploaded(item_uid)`
+  - [x] `mark_cloud_failed(item_uid, error, next_retry)`
+  - [x] `mark_local_processing(item_uid, locked_until)`
+  - [x] `mark_local_done(item_uid, result_path)`
+  - [x] `mark_local_failed(item_uid, error)`
 
-- [ ] 2.4 Implementar lock de concorrência
-  - [ ] Usar `locked_until` com UPDATE atômico
-  - [ ] Exemplo: `UPDATE queue_items SET cloud_status='UPLOADING', locked_until=? WHERE item_uid=? AND locked_until < now()`
+- [x] 2.4 Implementar lock de concorrência
+  - [x] Usar `locked_until` com UPDATE atômico
+  - [x] Exemplo: `UPDATE queue_items SET cloud_status='UPLOADING', locked_until=? WHERE item_uid=? AND locked_until < now()`
 
-- [ ] 2.5 Garantir idempotência
-  - [ ] UNIQUE constraint em `item_uid`
-  - [ ] Lógica de upsert (INSERT OR REPLACE)
+- [x] 2.5 Garantir idempotência
+  - [x] UNIQUE constraint em `item_uid`
+  - [x] Lógica de upsert (INSERT OR REPLACE)
 
 ---
 

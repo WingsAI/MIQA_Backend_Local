@@ -1,6 +1,3 @@
-# Core
-python>=3.9
-
 # Monitoramento de arquivos
 watchdog>=3.0.0
 
