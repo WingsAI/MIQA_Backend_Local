@@ -232,24 +232,24 @@
 ---
 
 ## ✅ Tarefa 8: Métricas e Logs
-**Status:** 🔴 Pendente
+**Status:** Concluído
 
-- [ ] 8.1 Definir métricas
-  - [ ] `items_detected_total` - total de itens detectados
-  - [ ] `queue_pending_count` - itens na fila
-  - [ ] `processed_local_total` - processados localmente
-  - [ ] `sent_cloud_total` - enviados para nuvem
-  - [ ] `failures_total` - falhas (por tipo)
-  - [ ] `healthcheck_latency_ms` - latência do healthcheck
+- [x] 8.1 Definir métricas
+  - [x] `items_detected_total` - total de itens detectados
+  - [x] `queue_pending_count` - itens na fila
+  - [x] `processed_local_total` - processados localmente
+  - [x] `sent_cloud_total` - enviados para nuvem
+  - [x] `failures_total` - falhas (por tipo)
+  - [x] `healthcheck_latency_ms` - latência do healthcheck
 
-- [ ] 8.2 Implementar camada de métricas
-  - [ ] Criar tabela `metrics_events` no SQLite
-  - [ ] Campos: `timestamp`, `metric_name`, `value`, `labels` (JSON)
-  - [ ] Função: `record_metric(name, value, labels)`
+- [x] 8.2 Implementar camada de métricas
+  - [x] Criar tabela `metrics_events` no SQLite
+  - [x] Campos: `timestamp`, `metric_name`, `value`, `labels` (JSON)
+  - [x] Função: `record_metric(name, value, labels)`
 
-- [ ] 8.3 Garantir labels consistentes
-  - [ ] Sempre incluir: `device_id`
-  - [ ] Incluir quando aplicável: `mode` (local/cloud), `modality`
+- [x] 8.3 Garantir labels consistentes
+  - [x] Sempre incluir: `device_id`
+  - [x] Incluir quando aplicável: `mode` (local/cloud), `modality`
 
 ---
 
