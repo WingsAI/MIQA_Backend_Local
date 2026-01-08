@@ -16,8 +16,8 @@ Criar módulo offline do MIQA para funcionar em hospitais com internet instável
 |--------|--------|-----------|------------|
 | 1. Bootstrap | 🟢 Concluído | 100% | P0 - Crítico |
 | 2. SQLite | 🟢 Concluído | 100% | P0 - Crítico |
-| 3. Ingestão | 🔴 Não Iniciado | 0% | P0 - Crítico |
-| 4. Arquivo Parcial | 🔴 Não Iniciado | 0% | P0 - Crítico |
+| 3. Ingestão | 🟢 Concluído | 100% | P0 - Crítico |
+| 4. Arquivo Parcial | 🟢 Concluído | 100% | P0 - Crítico |
 | 5. Connectivity | 🔴 Não Iniciado | 0% | P0 - Crítico |
 | 6. Cloud Worker | 🔴 Não Iniciado | 0% | P0 - Crítico |
 | 7. Local Worker | 🔴 Não Iniciado | 0% | P0 - Crítico |

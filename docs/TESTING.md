@@ -279,7 +279,7 @@ from pathlib import Path
 import time
 
 # Criar arquivo de teste
-test_file = Path('watch/test.jpg')
+test_file = Path('watch/test_mri.jpg')
 test_file.parent.mkdir(exist_ok=True)
 
 # Escrever arquivo

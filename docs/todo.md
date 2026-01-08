@@ -89,49 +89,49 @@
 ---
 
 ## ✅ Tarefa 3: Ingestão de Imagens
-**Status:** 🔴 Pendente
+**Status:** Concluído
 
-- [ ] 3.1 Implementar detector de origem
-  - [ ] Classe `ImageDetector` com método `detect()`
-  - [ ] Suporte para `LISTENER` (pasta)
-  - [ ] Stub para `DICOM SCP` (não implementar ainda)
+- [x] 3.1 Implementar detector de origem
+  - [x] Classe `ImageDetector` com método `detect()`
+  - [x] Suporte para `LISTENER` (pasta)
+  - [x] Stub para `DICOM SCP` (não implementar ainda)
 
-- [ ] 3.2 Listener de pasta (edge/listener.py)
-  - [ ] Usar `watchdog` para monitorar diretório
-  - [ ] Eventos: `on_created`, `on_modified`, `on_moved`
-  - [ ] Varredura periódica (fallback a cada 30s)
-  - [ ] Filtrar apenas imagens: `.jpg`, `.png`, `.dcm`
+- [x] 3.2 Listener de pasta (edge/listener.py)
+  - [x] Usar `watchdog` para monitorar diretório
+  - [x] Eventos: `on_created`, `on_modified`, `on_moved`
+  - [x] Varredura periódica (fallback a cada 30s)
+  - [x] Filtrar apenas imagens: `.jpg`, `.png`, `.dcm`
 
-- [ ] 3.3 DICOM SCP (edge/dicom_receiver.py)
-  - [ ] Criar stub básico com `pynetdicom`
-  - [ ] Receber instância e salvar em pasta controlada
-  - [ ] Gerar `item_uid` a partir de `SOPInstanceUID`
-  - [ ] **NÃO IMPLEMENTAR COMPLETAMENTE AINDA**
+- [x] 3.3 DICOM SCP (edge/dicom_receiver.py)
+  - [x] Criar stub básico com `pynetdicom`
+  - [x] Receber instância e salvar em pasta controlada
+  - [x] Gerar `item_uid` a partir de `SOPInstanceUID`
+  - [x] **STUB APENAS - não implementado completamente**
 
-- [ ] 3.4 Gerar `item_uid`
-  - [ ] Se DICOM: usar `SOPInstanceUID`
-  - [ ] Se arquivo comum: `sha256(conteúdo)` ou `sha256(tamanho + mtime + hash_parcial)`
+- [x] 3.4 Gerar `item_uid`
+  - [x] Se DICOM: usar `SOPInstanceUID`
+  - [x] Se arquivo comum: `sha256(conteúdo)` ou `sha256(tamanho + mtime + hash_parcial)`
 
-- [ ] 3.5 Registrar no SQLite
-  - [ ] Chamar `repository.upsert_item()` ao detectar arquivo
+- [x] 3.5 Registrar no SQLite
+  - [x] Chamar `repository.upsert_item()` ao detectar arquivo
 
 ---
 
 ## ✅ Tarefa 4: Proteção Arquivo Parcial
-**Status:** 🔴 Pendente
+**Status:** Concluído
 
-- [ ] 4.1 Implementar verificação "arquivo estável"
-  - [ ] Função: `is_file_stable(path, checks=5, interval=1.0)`
-  - [ ] Verificar tamanho e mtime em intervalos
-  - [ ] Retornar True apenas se não mudar por 5 verificações
+- [x] 4.1 Implementar verificação "arquivo estável"
+  - [x] Função: `is_file_stable(path, checks=5, interval=1.0)`
+  - [x] Verificar tamanho e mtime em intervalos
+  - [x] Retornar True apenas se não mudar por 5 verificações
 
-- [ ] 4.2 Implementar timeout
-  - [ ] Timeout máximo: 30 segundos
-  - [ ] Se não estabilizar, marcar como `FAILED` com erro "partial_file"
+- [x] 4.2 Implementar timeout
+  - [x] Timeout máximo: 30 segundos
+  - [x] Se não estabilizar, marcar como `FAILED` com erro "partial_file"
 
-- [ ] 4.3 Integrar com listener
-  - [ ] Só inserir no SQLite após arquivo estabilizar
-  - [ ] Ou inserir como `DETECTED` e promover para `READY` depois
+- [x] 4.3 Integrar com listener
+  - [x] Só inserir no SQLite após arquivo estabilizar
+  - [x] Ou inserir como `DETECTED` e promover para `READY` depois
 
 ---
 
