@@ -166,37 +166,37 @@
 ---
 
 ## ✅ Tarefa 6: Cloud Worker
-**Status:** 🔴 Pendente
+**Status:** Concluído
 
-- [ ] 6.1 Implementar cliente HTTP (cloud_client/sender.py)
-  - [ ] Usar `httpx` com async
-  - [ ] Configurar timeouts: connect=5s, read=30s
-  - [ ] Configurar retries: 3 tentativas com backoff exponencial
-  - [ ] Limite de concorrência: 5 uploads simultâneos
+- [x] 6.1 Implementar cliente HTTP (cloud_client/sender.py)
+  - [x] Usar `httpx` com async
+  - [x] Configurar timeouts: connect=5s, read=30s
+  - [x] Configurar retries: 3 tentativas com backoff exponencial
+  - [x] Limite de concorrência: 5 uploads simultâneos
 
-- [ ] 6.2 Definir contrato de upload
-  - [ ] Endpoint: `POST /api/v1/miqa/analyze`
-  - [ ] Formato: multipart/form-data
-  - [ ] Campos: `file`, `modality`, `device_id`, `item_uid`
+- [x] 6.2 Definir contrato de upload
+  - [x] Endpoint: `POST /api/v1/miqa/analyze`
+  - [x] Formato: multipart/form-data
+  - [x] Campos: `file`, `modality`, `device_id`, `item_uid`
 
-- [ ] 6.3 Implementar seleção de itens
-  - [ ] Query: `cloud_status IN ('PENDING', 'FAILED') AND next_retry_at <= now() AND locked_until < now()`
-  - [ ] Ordenar por: `detected_at ASC` (FIFO)
+- [x] 6.3 Implementar seleção de itens
+  - [x] Query: `cloud_status IN ('PENDING', 'FAILED') AND next_retry_at <= now() AND locked_until < now()`
+  - [x] Ordenar por: `detected_at ASC` (FIFO)
 
-- [ ] 6.4 Implementar "claim" do item
-  - [ ] Marcar `cloud_status='UPLOADING'`
-  - [ ] Setar `locked_until = now() + 5 minutos`
+- [x] 6.4 Implementar "claim" do item
+  - [x] Marcar `cloud_status='UPLOADING'`
+  - [x] Setar `locked_until = now() + 5 minutos`
 
-- [ ] 6.5 Implementar idempotência
-  - [ ] Header: `Idempotency-Key: {item_uid}`
+- [x] 6.5 Implementar idempotência
+  - [x] Header: `Idempotency-Key: {item_uid}`
 
-- [ ] 6.6 Atualizar SQLite conforme resultado
-  - [ ] Sucesso: `cloud_status='UPLOADED'`, salvar resultado
-  - [ ] Falha: `cloud_status='FAILED'`, incrementar `retry_count`, setar `next_retry_at`
+- [x] 6.6 Atualizar SQLite conforme resultado
+  - [x] Sucesso: `cloud_status='UPLOADED'`, salvar resultado
+  - [x] Falha: `cloud_status='FAILED'`, incrementar `retry_count`, setar `next_retry_at`
 
-- [ ] 6.7 Respeitar Connectivity Manager
-  - [ ] Verificar `system_state.connectivity_state`
-  - [ ] Se `OFFLINE` ou `FORCED_OFFLINE`, não tentar enviar
+- [x] 6.7 Respeitar Connectivity Manager
+  - [x] Verificar `system_state.connectivity_state`
+  - [x] Se `OFFLINE` ou `FORCED_OFFLINE`, não tentar enviar
 
 ---
 

@@ -469,7 +469,7 @@ async def test():
     url = 'https://miqaback-production.up.railway.app/api/v1/miqa/analyze'
     
     # Criar imagem de teste
-    test_file = Path('watch/test.jpg')
+    test_file = Path('watch/test_image.jpg')
     with open(test_file, 'wb') as f:
         f.write(b'fake image data')
     

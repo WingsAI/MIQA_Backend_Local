@@ -19,7 +19,7 @@ Criar módulo offline do MIQA para funcionar em hospitais com internet instável
 | 3. Ingestão | 🟢 Concluído | 100% | P0 - Crítico |
 | 4. Arquivo Parcial | 🟢 Concluído | 100% | P0 - Crítico |
 | 5. Connectivity | 🟢 Concluído | 100% | P0 - Crítico |
-| 6. Cloud Worker | 🔴 Não Iniciado | 0% | P0 - Crítico |
+| 6. Cloud Worker | 🟢 Concluído | 100% | P0 - Crítico |
 | 7. Local Worker | 🟢 Concluído | 100% | P0 - Crítico |
 | 8. Métricas | 🔴 Não Iniciado | 0% | P0 - Crítico |
 | 9. Exportação | ⚪ Não Planejado | 0% | P1 - Alto |
