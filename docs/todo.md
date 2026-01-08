@@ -136,32 +136,32 @@
 ---
 
 ## ✅ Tarefa 5: Connectivity Manager
-**Status:** 🔴 Pendente
+**Status:** Concluído
 
-- [ ] 5.1 Implementar estados
-  - [ ] `ONLINE` - internet OK
-  - [ ] `OFFLINE` - sem internet
-  - [ ] `DEGRADED` - internet lenta/instável
-  - [ ] `FORCED_OFFLINE` - modo forçado offline
+- [x] 5.1 Implementar estados
+  - [x] `ONLINE` - internet OK
+  - [x] `OFFLINE` - sem internet
+  - [x] `DEGRADED` - internet lenta/instável
+  - [x] `FORCED_OFFLINE` - modo forçado offline
 
-- [ ] 5.2 Implementar healthcheck
-  - [ ] Endpoint: `GET /health` na API de produção
-  - [ ] Timeout: 3 segundos
-  - [ ] Periodicidade: a cada 10 segundos
+- [x] 5.2 Implementar healthcheck
+  - [x] Endpoint: `GET /health` na API de produção
+  - [x] Timeout: 3 segundos
+  - [x] Periodicidade: a cada 10 segundos
 
-- [ ] 5.3 Implementar medição de latência
-  - [ ] Janela deslizante: últimos 10 checks
-  - [ ] Histerese: 3 falhas consecutivas para marcar OFFLINE
-  - [ ] Histerese: 3 sucessos consecutivos para marcar ONLINE
+- [x] 5.3 Implementar medição de latência
+  - [x] Janela deslizante: últimos 10 checks
+  - [x] Histerese: 3 falhas consecutivas para marcar OFFLINE
+  - [x] Histerese: 3 sucessos consecutivos para marcar ONLINE
 
-- [ ] 5.4 Expor estado atual
-  - [ ] Criar tabela `system_state` no SQLite
-  - [ ] Campos: `key`, `value`, `updated_at`
-  - [ ] Chave: `connectivity_state` com valor `ONLINE|OFFLINE|DEGRADED|FORCED_OFFLINE`
+- [x] 5.4 Expor estado atual
+  - [x] Criar tabela `system_state` no SQLite
+  - [x] Campos: `key`, `value`, `updated_at`
+  - [x] Chave: `connectivity_state` com valor `ONLINE|OFFLINE|DEGRADED|FORCED_OFFLINE`
 
-- [ ] 5.5 Implementar modo `FORCED_OFFLINE`
-  - [ ] Ler de `config.yaml`: `mode: FORCED_OFFLINE`
-  - [ ] Se ativo, sempre retornar `FORCED_OFFLINE`
+- [x] 5.5 Implementar modo `FORCED_OFFLINE`
+  - [x] Ler de `config.yaml`: `mode: FORCED_OFFLINE`
+  - [x] Se ativo, sempre retornar `FORCED_OFFLINE`
 
 ---
 
