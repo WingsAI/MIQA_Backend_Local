@@ -202,7 +202,21 @@ class CloudWorker:
                     except Exception as e:
                         logger.warning(f"Não foi possível salvar resultado da nuvem: {e}")
                     
+                    # Marcar cloud como uploaded
                     self.repository.mark_cloud_uploaded(item_uid)
+                    
+                    # Marcar local como DONE também (não precisa processar localmente)
+                    import sqlite3
+                    conn = self.repository._get_conn()
+                    cursor = conn.cursor()
+                    cursor.execute("""
+                        UPDATE queue_items 
+                        SET local_status = 'DONE'
+                        WHERE item_uid = ?
+                    """, (item_uid,))
+                    conn.commit()
+                    conn.close()
+                    
                     logger.info(f"✅ Upload OK: {item_uid[:16]}... (HTTP 200)")
                     return True
                 
