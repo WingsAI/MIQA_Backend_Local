@@ -125,43 +125,63 @@ class ImageFileHandler(FileSystemEventHandler):
     
     def _detect_modality(self, path: Path) -> str:
         """
-        Tenta detectar modalidade da imagem
+        Detecta modalidade da imagem
+        
+        Prioridade:
+        1. Pasta onde está (watch/mri/, watch/ct/, watch/us/)
+        2. Nome do arquivo (padrões)
+        3. Padrão: MRI
         
         Args:
             path: Caminho do arquivo
         
         Returns:
-            Modalidade detectada ou 'mri' (padrão)
+            Modalidade detectada ('mri', 'ct' ou 'us')
         """
+        # 1. PRIORIDADE: Detectar pela pasta
+        path_str = str(path).lower().replace('\\', '/')
+        
+        if '/mri/' in path_str or path_str.endswith('/mri'):
+            logger.debug(f"Modalidade detectada pela pasta: MRI ({path.parent.name})")
+            return 'mri'
+        
+        if '/ct/' in path_str or path_str.endswith('/ct'):
+            logger.debug(f"Modalidade detectada pela pasta: CT ({path.parent.name})")
+            return 'ct'
+        
+        if '/us/' in path_str or path_str.endswith('/us'):
+            logger.debug(f"Modalidade detectada pela pasta: US ({path.parent.name})")
+            return 'us'
+        
+        # 2. FALLBACK: Detectar pelo nome do arquivo
         filename_lower = path.name.lower()
         
-        # Padrões mais específicos primeiro
         # MRI patterns
         mri_patterns = ['mri', 'rm', 'resonancia', 'magnetic', 't1', 't2', 'flair', 'dwi']
         if any(pattern in filename_lower for pattern in mri_patterns):
-            logger.debug(f"Modalidade detectada: MRI (padrão: {filename_lower})")
+            logger.debug(f"Modalidade detectada pelo nome: MRI ({filename_lower})")
             return 'mri'
         
         # CT patterns
         ct_patterns = ['ct', 'tc', 'tomografia', 'computed']
         if any(pattern in filename_lower for pattern in ct_patterns):
-            logger.debug(f"Modalidade detectada: CT (padrão: {filename_lower})")
+            logger.debug(f"Modalidade detectada pelo nome: CT ({filename_lower})")
             return 'ct'
         
         # US patterns
         us_patterns = ['us', 'ultra', 'ultrasound', 'ecografia', 'echo']
         if any(pattern in filename_lower for pattern in us_patterns):
-            logger.debug(f"Modalidade detectada: US (padrão: {filename_lower})")
+            logger.debug(f"Modalidade detectada pelo nome: US ({filename_lower})")
             return 'us'
         
-        # X-Ray patterns
+        # X-Ray patterns (tratado como MRI)
         xray_patterns = ['xray', 'rx', 'raio', 'radiografia']
         if any(pattern in filename_lower for pattern in xray_patterns):
-            logger.debug(f"Modalidade detectada: X-Ray (padrão: {filename_lower})")
-            return 'mri'  # MIQA trata X-Ray como MRI
+            logger.debug(f"Modalidade detectada pelo nome: X-Ray → MRI ({filename_lower})")
+            return 'mri'
         
-        # Default: MRI (mais comum em hospitais)
-        logger.warning(f"Modalidade não detectada em '{path.name}', usando MRI como padrão")
+        # 3. DEFAULT: MRI
+        logger.warning(f"Modalidade não detectada em '{path}', usando MRI como padrão")
         return 'mri'
 
 class FileListener:
