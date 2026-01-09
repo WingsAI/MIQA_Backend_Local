@@ -131,23 +131,38 @@ class ImageFileHandler(FileSystemEventHandler):
             path: Caminho do arquivo
         
         Returns:
-            Modalidade detectada ou 'unknown'
+            Modalidade detectada ou 'mri' (padrão)
         """
-        # Por enquanto, retorna unknown
-        # TODO: Implementar detecção via DICOM tags ou nome do arquivo
-        
         filename_lower = path.name.lower()
         
-        if 'mri' in filename_lower or 'rm' in filename_lower:
+        # Padrões mais específicos primeiro
+        # MRI patterns
+        mri_patterns = ['mri', 'rm', 'resonancia', 'magnetic', 't1', 't2', 'flair', 'dwi']
+        if any(pattern in filename_lower for pattern in mri_patterns):
+            logger.debug(f"Modalidade detectada: MRI (padrão: {filename_lower})")
             return 'mri'
-        elif 'ct' in filename_lower or 'tc' in filename_lower:
+        
+        # CT patterns
+        ct_patterns = ['ct', 'tc', 'tomografia', 'computed']
+        if any(pattern in filename_lower for pattern in ct_patterns):
+            logger.debug(f"Modalidade detectada: CT (padrão: {filename_lower})")
             return 'ct'
-        elif 'us' in filename_lower or 'ultra' in filename_lower:
+        
+        # US patterns
+        us_patterns = ['us', 'ultra', 'ultrasound', 'ecografia', 'echo']
+        if any(pattern in filename_lower for pattern in us_patterns):
+            logger.debug(f"Modalidade detectada: US (padrão: {filename_lower})")
             return 'us'
-        elif 'xray' in filename_lower or 'rx' in filename_lower:
-            return 'xray'
-        else:
-            return 'unknown'
+        
+        # X-Ray patterns
+        xray_patterns = ['xray', 'rx', 'raio', 'radiografia']
+        if any(pattern in filename_lower for pattern in xray_patterns):
+            logger.debug(f"Modalidade detectada: X-Ray (padrão: {filename_lower})")
+            return 'mri'  # MIQA trata X-Ray como MRI
+        
+        # Default: MRI (mais comum em hospitais)
+        logger.warning(f"Modalidade não detectada em '{path.name}', usando MRI como padrão")
+        return 'mri'
 
 class FileListener:
     """Listener principal que monitora pasta"""

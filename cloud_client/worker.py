@@ -161,64 +161,75 @@ class CloudWorker:
         
         try:
             async with httpx.AsyncClient() as client:
-                # Preparar arquivo
+                # Ler arquivo completamente antes de enviar
                 with open(path, 'rb') as f:
-                    files = {'file': (path.name, f, 'image/jpeg')}
+                    file_content = f.read()
+                
+                # Preparar arquivo para upload
+                files = {'file': (path.name, file_content, 'image/jpeg')}
+                
+                # Preparar dados
+                data = {
+                    'modality': item.get('meta_modality') or 'mri',
+                    'device_id': self.device_id
+                }
+                
+                # Headers com idempotência
+                headers = {
+                    'Idempotency-Key': item_uid
+                }
+                
+                # Fazer POST
+                endpoint = f"{self.api_url}/api/v1/miqa/analyze"
+                
+                logger.debug(f"POST {endpoint} (tentativa {attempt})")
+                
+                response = await client.post(
+                    endpoint,
+                    files=files,
+                    data=data,
+                    headers=headers,
+                    timeout=self.upload_timeout
+                )
+                
+                
+                # Verificar resposta
+                if response.status_code == 200:
+                    # Salvar resultado da nuvem localmente
+                    try:
+                        result_data = response.json()
+                        self._save_cloud_result(item_uid, result_data, path)
+                    except Exception as e:
+                        logger.warning(f"Não foi possível salvar resultado da nuvem: {e}")
                     
-                    # Preparar dados
-                    data = {
-                        'modality': item.get('meta_modality') or 'unknown',
-                        'device_id': self.device_id
-                    }
-                    
-                    # Headers com idempotência
-                    headers = {
-                        'Idempotency-Key': item_uid
-                    }
-                    
-                    # Fazer POST
-                    endpoint = f"{self.api_url}/api/v1/miqa/analyze"
-                    
-                    logger.debug(f"POST {endpoint} (tentativa {attempt})")
-                    
-                    response = await client.post(
-                        endpoint,
-                        files=files,
-                        data=data,
-                        headers=headers,
-                        timeout=self.upload_timeout
-                    )
-                    
-                    # Verificar resposta
-                    if response.status_code == 200:
-                        self.repository.mark_cloud_uploaded(item_uid)
-                        logger.info(f"✅ Upload OK: {item_uid[:16]}... (HTTP 200)")
-                        return True
-                    
-                    elif response.status_code == 409:
-                        # Conflito - já foi processado (idempotência)
-                        logger.info(f"✅ Upload OK (duplicado): {item_uid[:16]}... (HTTP 409)")
-                        self.repository.mark_cloud_uploaded(item_uid)
-                        return True
-                    
-                    elif response.status_code in (400, 422):
-                        # Erro de validação - não retry
-                        error = f"Validação falhou: HTTP {response.status_code} - {response.text[:200]}"
-                        logger.error(f"❌ {error}")
-                        self.repository.mark_cloud_failed(item_uid, error)
-                        return True  # Não retry
-                    
-                    elif response.status_code >= 500:
-                        # Erro do servidor - retry
-                        error = f"Erro do servidor: HTTP {response.status_code}"
-                        logger.warning(f"⚠️  {error} (tentativa {attempt})")
-                        return False  # Retry
-                    
-                    else:
-                        # Outro erro
-                        error = f"HTTP {response.status_code}: {response.text[:200]}"
-                        logger.warning(f"⚠️  {error} (tentativa {attempt})")
-                        return False  # Retry
+                    self.repository.mark_cloud_uploaded(item_uid)
+                    logger.info(f"✅ Upload OK: {item_uid[:16]}... (HTTP 200)")
+                    return True
+                
+                elif response.status_code == 409:
+                    # Conflito - já foi processado (idempotência)
+                    logger.info(f"✅ Upload OK (duplicado): {item_uid[:16]}... (HTTP 409)")
+                    self.repository.mark_cloud_uploaded(item_uid)
+                    return True
+                
+                elif response.status_code in (400, 422):
+                    # Erro de validação - não retry
+                    error = f"Validação falhou: HTTP {response.status_code} - {response.text[:200]}"
+                    logger.error(f"❌ {error}")
+                    self.repository.mark_cloud_failed(item_uid, error)
+                    return True  # Não retry
+                
+                elif response.status_code >= 500:
+                    # Erro do servidor - retry
+                    error = f"Erro do servidor: HTTP {response.status_code}"
+                    logger.warning(f"⚠️  {error} (tentativa {attempt})")
+                    return False  # Retry
+                
+                else:
+                    # Outro erro
+                    error = f"HTTP {response.status_code}: {response.text[:200]}"
+                    logger.warning(f"⚠️  {error} (tentativa {attempt})")
+                    return False  # Retry
         
         except httpx.TimeoutException:
             error = f"Timeout após {self.upload_timeout}s"
@@ -234,6 +245,38 @@ class CloudWorker:
             error = f"Erro inesperado: {e}"
             logger.error(f"❌ {error}")
             raise  # Re-raise para ser tratado no caller
+    
+    def _save_cloud_result(self, item_uid: str, result_data: dict, image_path: Path):
+        """
+        Salva resultado da nuvem localmente
+        
+        Args:
+            item_uid: UID do item
+            result_data: Resposta da API
+            image_path: Caminho da imagem original
+        """
+        import json
+        import time
+        
+        # Criar diretório results/online
+        results_dir = Path("./results/online")
+        results_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Adicionar metadados
+        result_data['item_uid'] = item_uid
+        result_data['image_path'] = str(image_path)
+        result_data['processed_at'] = time.time()
+        result_data['processed_by'] = 'cloud_worker'
+        result_data['device_id'] = self.device_id
+        
+        # Salvar JSON
+        filename = f"{item_uid}.json"
+        filepath = results_dir / filename
+        
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(result_data, f, indent=2, ensure_ascii=False)
+        
+        logger.info(f"💾 Resultado da nuvem salvo: {filepath}")
     
     def get_stats(self) -> dict:
         """

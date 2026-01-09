@@ -93,7 +93,28 @@ class LocalWorker:
         # Verificar estado de conectividade
         state = self.repository.get_system_state('connectivity_state')
         
+        # Processar localmente se:
+        # 1. Sistema está OFFLINE
+        # 2. Há itens que falharam no cloud (fallback)
         if state in ('OFFLINE', 'FORCED_OFFLINE'):
+            return True
+        
+        # Mesmo ONLINE, processar itens que falharam no cloud após múltiplas tentativas
+        import sqlite3
+        conn = self.repository._get_conn()
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT COUNT(*) FROM queue_items 
+            WHERE local_status = 'PENDING' 
+            AND cloud_status = 'FAILED'
+            AND retry_count >= 3
+        """)
+        failed_cloud_items = cursor.fetchone()[0]
+        conn.close()
+        
+        if failed_cloud_items > 0:
+            logger.info(f"🔄 {failed_cloud_items} itens falharam no cloud, processando localmente como fallback")
             return True
         
         return False
@@ -186,9 +207,13 @@ class LocalWorker:
         Returns:
             Path do arquivo salvo
         """
+        # Criar diretório results/offline
+        results_dir = Path("./results/offline")
+        results_dir.mkdir(parents=True, exist_ok=True)
+        
         # Nome do arquivo
         filename = f"{item_uid}.json"
-        filepath = self.results_dir / filename
+        filepath = results_dir / filename
         
         # Salvar JSON
         with open(filepath, 'w', encoding='utf-8') as f:

@@ -352,3 +352,5 @@ Backend_local/
 ---
 
 **Última atualização:** 2026-01-08 17:45
+
+python -c "from db.repository import QueueRepository; repo = QueueRepository('./db/miqa.db'); repo.set_system_state('connectivity_state', 'ONLINE'); print('✅ Estado setado para ONLINE')"
