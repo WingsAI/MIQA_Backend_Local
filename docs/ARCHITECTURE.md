@@ -353,7 +353,7 @@ Backend_local/
 
 **Última atualização:** 2026-01-08 17:45
 
-python -c "from db.repository import QueueRepository; repo = QueueRepository('./db/miqa.db'); repo.set_system_state('connectivity_state', 'ONLINE'); print('✅ Estado setado para ONLINE')"
+python -c "from db.repository import QueueRepository; repo = QueueRepository('./db/miqa.db'); repo.set_system_state('connectivity_state', 'FORCED_OFFLINE'); print('✅ Estado setado para FORCED_OFFLINE')"
 
 
 python -c "import sqlite3; conn = sqlite3.connect('./db/miqa.db'); cursor = conn.cursor(); cursor.execute('DELETE FROM queue_items'); conn.commit(); print('✅ Banco limpo'); conn.close()"
