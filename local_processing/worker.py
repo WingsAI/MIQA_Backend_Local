@@ -172,8 +172,20 @@ class LocalWorker:
             # Salvar resultado
             result_path = self._save_result(item_uid, result)
             
-            # Marcar como concluído
+            # Marcar local como concluído
             self.repository.mark_local_done(item_uid, str(result_path))
+            
+            # Marcar cloud como DONE também (não precisa enviar para cloud)
+            import sqlite3
+            conn = self.repository._get_conn()
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE queue_items 
+                SET cloud_status = 'DONE'
+                WHERE item_uid = ?
+            """, (item_uid,))
+            conn.commit()
+            conn.close()
             
             duration = time.time() - start_time
             logger.info(f"✅ Processamento local OK: {item_uid[:16]}... ({duration:.2f}s, score: {result.get('score', 'N/A')})")
