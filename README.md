@@ -129,20 +129,28 @@ Imagem detectada → Fila SQLite → Verificar conectividade
 
 ## 🛠️ Desenvolvimento
 
-### Tarefa Atual
+### Status das Tarefas
 
-✅ Tarefa 1: Bootstrap (Completo)
-🔴 Tarefa 2: SQLite (Próximo)
+| Tarefa | Status |
+|--------|--------|
+| 1. Bootstrap | ✅ Concluído |
+| 2. SQLite | ✅ Concluído |
+| 3. Ingestão | ✅ Concluído |
+| 4. Arquivo Parcial | ✅ Concluído |
+| 5. Connectivity | ✅ Concluído |
+| 6. Cloud Worker | ✅ Concluído |
+| 7. Local Worker | ✅ Concluído |
+| 8. Métricas | ✅ Concluído |
+
+**Todas as 8 tarefas críticas foram concluídas.**
 
 ### Próximos Passos
 
-1. Implementar Tarefa 2 (SQLite)
-2. Implementar Tarefa 3 (Ingestão)
-3. Implementar Tarefa 4 (Arquivo Parcial)
-4. Implementar Tarefa 5 (Connectivity)
-5. Implementar Tarefa 6 (Cloud Worker)
-6. Implementar Tarefa 7 (Local Worker)
-7. Implementar Tarefa 8 (Métricas)
+1. Tarefa 9: Exportação de métricas (P1)
+2. Tarefa 10: Criptografia (P2)
+3. Tarefa 11: Limpeza automática (P2)
+4. Tarefa 12: Testes automatizados (P1)
+5. Deploy no hospital
 
 ## 📄 Licença
 
@@ -150,5 +158,5 @@ Propriedade de WingsAI - Uso interno
 
 ---
 
-**Versão:** 1.0.0  
-**Última atualização:** 2026-01-08
+**Versão:** 1.0.0
+**Última atualização:** 2026-01-14
