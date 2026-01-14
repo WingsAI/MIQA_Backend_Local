@@ -150,15 +150,18 @@ class LocalWorker:
             
             if image is None:
                 raise ValueError(f"Não foi possível carregar imagem: {path}")
-            
-            # Converter para RGB (OpenCV usa BGR)
-            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            
+
+            # Converter para grayscale (MIQA espera imagem 2D)
+            if len(image.shape) == 3:
+                image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            else:
+                image_gray = image
+
             # Processar com MIQA
             modality = item.get('meta_modality') or 'mri'
-            
+
             logger.debug(f"Analisando com modalidade: {modality}")
-            result = self.analyzer.analyze(image_rgb, modality=modality)
+            result = self.analyzer.analyze(image_gray, modality=modality)
             
             # Adicionar metadados
             result['item_uid'] = item_uid

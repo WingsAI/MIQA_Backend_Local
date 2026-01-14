@@ -168,12 +168,18 @@ python main.py listener & python main.py connectivity-manager & python main.py c
 
 ### **Forçar Modo Offline**
 
-Edite `config/config.yaml`:
+1. Edite `config/config.yaml`:
 ```yaml
-mode: "FORCED_OFFLINE"  # Mude de AUTO para FORCED_OFFLINE
+mode: "FORCED_OFFLINE"
 ```
 
-Depois reinicie os workers.
+2. Reinicie apenas os workers necessários (sem cloud-worker):
+```bash
+pkill -f "main.py"
+python main.py listener & python main.py connectivity-manager & python main.py local-worker
+```
+
+3. Resultados serão salvos em `results/offline/`
 
 ### **Limpar Fila (se necessário)**
 

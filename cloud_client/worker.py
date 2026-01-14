@@ -44,12 +44,15 @@ class CloudWorker:
     async def run(self):
         """Loop principal de envio"""
         logger.info("☁️  Cloud Worker iniciado")
-        
+
+        # Aguardar connectivity_manager inicializar estado
+        await asyncio.sleep(2)
+
         try:
             while True:
                 # Verificar se deve enviar para cloud
                 if not self._should_upload_to_cloud():
-                    logger.debug("Sistema OFFLINE, aguardando...")
+                    logger.debug("Sistema OFFLINE ou FORCED_OFFLINE, aguardando...")
                     await asyncio.sleep(self.worker_interval * 2)
                     continue
                 
@@ -76,21 +79,25 @@ class CloudWorker:
     def _should_upload_to_cloud(self) -> bool:
         """
         Verifica se deve enviar para cloud
-        
+
         Returns:
             True se deve enviar
         """
-        # Verificar modo forçado offline
+        # Verificar modo forçado offline (config)
         if self.config.get('mode') == 'FORCED_OFFLINE':
             return False
-        
-        # Verificar estado de conectividade
+
+        # Verificar estado de conectividade no banco
         state = self.repository.get_system_state('connectivity_state')
-        
+
+        # Nunca enviar se OFFLINE ou FORCED_OFFLINE
+        if state in ('OFFLINE', 'FORCED_OFFLINE'):
+            return False
+
         # Enviar se ONLINE ou DEGRADED
         if state in ('ONLINE', 'DEGRADED'):
             return True
-        
+
         return False
     
     async def _upload_item(self, item: dict):
