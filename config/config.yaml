@@ -53,3 +53,11 @@ logging:
   level: "INFO"             # DEBUG, INFO, WARNING, ERROR
   format: "json"            # json ou text
   file: "./logs/miqa.log"
+
+# Sincronização de resultados offline
+# Quando internet volta, envia JSONs de results/offline/ para API
+sync:
+  endpoint: "/api/v1/miqa/sync-offline"  # Endpoint na API de produção
+  interval: 30              # segundos entre verificações
+  timeout: 30               # timeout do request
+  delete_after_sync: true   # deleta JSONs após sincronizar com sucesso

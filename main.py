@@ -115,16 +115,34 @@ def local_worker():
 def metrics_exporter():
     """
     Exporta métricas (futuro)
-    
+
     Exporta métricas acumuladas para a nuvem ou para arquivo local.
     """
     from metrics.exporter import MetricsExporter
-    
+
     click.echo("📊 Iniciando Metrics Exporter...")
-    click.echo("⚠️  Implementação futura (Tarefa 9)")
-    
+
     exporter = MetricsExporter(config)
     exporter.run()
+
+@cli.command()
+def sync_worker():
+    """
+    Sincroniza resultados offline com API de produção
+
+    Quando internet volta, envia JSONs de results/offline/
+    para o endpoint configurado em sync.endpoint
+    """
+    from metrics.sync_worker import SyncWorker
+
+    api_url = config['cloud']['api_url']
+    endpoint = config.get('sync', {}).get('endpoint', '/api/v1/miqa/sync-offline')
+
+    click.echo("🔄 Iniciando Sync Worker...")
+    click.echo(f"API: {api_url}{endpoint}")
+
+    worker = SyncWorker(config)
+    worker.run()
 
 @cli.command()
 def init_db():

@@ -44,20 +44,20 @@ Edite `config/config.yaml` conforme necessário.
 
 ### 4. Iniciar Serviços
 
-Em terminais separados:
-
+**Modo AUTO (com internet):**
 ```bash
-# Terminal 1: Listener de arquivos
-python main.py listener
+python main.py listener & python main.py connectivity-manager & python main.py cloud-worker & python main.py local-worker & python main.py sync-worker
+```
 
-# Terminal 2: Gerenciador de conectividade
-python main.py connectivity-manager
+**Modo FORCED_OFFLINE (sem internet):**
+```bash
+# Edite config/config.yaml: mode: "FORCED_OFFLINE"
+python main.py listener & python main.py connectivity-manager & python main.py local-worker & python main.py sync-worker
+```
 
-# Terminal 3: Worker de nuvem
-python main.py cloud-worker
-
-# Terminal 4: Worker local
-python main.py local-worker
+**Parar todos:**
+```bash
+pkill -f "main.py"
 ```
 
 ## 📖 Comandos Disponíveis
