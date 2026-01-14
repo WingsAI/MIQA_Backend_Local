@@ -94,16 +94,11 @@ Edite `config/config.yaml`:
 - `directories.watch`: Pasta monitorada
 - `cloud.api_url`: URL da API de produção
 
-## 📊 Status do Projeto
+## Documentação
 
-Ver `docs/status.MD` para progresso detalhado.
-
-## 📝 Documentação
-
-- `docs/PRINCIPAL_DOC.md` - Especificação completa
-- `docs/todo.md` - Lista de tarefas
-- `docs/status.MD` - Status do projeto
-- `docs/instructions.md` - Instruções de implementação
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Arquitetura técnica
+- [docs/GUIA_DE_USO.md](docs/GUIA_DE_USO.md) - Guia para operadores
+- [docs/TESTING.md](docs/TESTING.md) - Testes e troubleshooting
 
 ## 🏥 Uso em Hospital
 

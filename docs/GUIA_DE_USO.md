@@ -1,14 +1,35 @@
-# 🏥 GUIA DE USO - Backend Local MIQA
+# Guia de Uso - Backend Local MIQA
 
-## 🎯 Sistema Pronto para Produção!
+## Instalação
 
-Todos os workers estão rodando e o sistema está **ONLINE** ✅
+```bash
+pip install -r requirements.txt
+python main.py init-db
+```
+
+## Iniciar Sistema
+
+```bash
+# Comando único (todos os workers em background)
+python main.py listener & python main.py connectivity-manager & python main.py cloud-worker & python main.py local-worker
+
+# Para parar todos
+pkill -f "main.py"
+```
+
+Ou em terminais separados:
+```bash
+python main.py listener
+python main.py connectivity-manager
+python main.py cloud-worker
+python main.py local-worker
+```
 
 ---
 
-## 📁 Como Processar Imagens Reais
+## Processar Imagens
 
-### **Passo 1: Copiar Imagens MRI para a Pasta Watch**
+### Copiar imagens para pasta watch
 
 ```bash
 # Copiar uma imagem
@@ -141,17 +162,8 @@ cat $(ls -t results/*.json | head -1)
 ### **Reiniciar Sistema**
 
 ```bash
-# Terminal 1
-python main.py listener
-
-# Terminal 2
-python main.py connectivity-manager
-
-# Terminal 3
-python main.py cloud-worker
-
-# Terminal 4
-python main.py local-worker
+pkill -f "main.py"
+python main.py listener & python main.py connectivity-manager & python main.py cloud-worker & python main.py local-worker
 ```
 
 ### **Forçar Modo Offline**
