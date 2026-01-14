@@ -6,7 +6,7 @@ device_id: "hospital-device-001"
 # Modo de operação
 # AUTO: decide automaticamente online/offline baseado em conectividade
 # FORCED_OFFLINE: sempre offline, nunca tenta enviar para nuvem
-mode: "FORCED_OFFLINE"
+mode: "AUTO"
 
 # Diretórios
 directories:

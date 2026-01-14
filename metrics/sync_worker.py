@@ -125,7 +125,7 @@ class SyncWorker:
                 'device_id': self.device_id,
                 'item_uid': data.get('item_uid'),
                 'result': data,
-                'synced_at': time.time(),
+                'synced_at': int(time.time()),
                 'source': 'offline_sync'
             }
 

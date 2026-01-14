@@ -46,13 +46,13 @@ Edite `config/config.yaml` conforme necessário.
 
 **Modo AUTO (com internet):**
 ```bash
-python main.py listener & python main.py connectivity-manager & python main.py cloud-worker & python main.py local-worker & python main.py sync-worker
+python3 main.py listener & python3 main.py connectivity-manager & python3 main.py cloud-worker & python3 main.py local-worker & python3 main.py sync-worker
 ```
 
 **Modo FORCED_OFFLINE (sem internet):**
 ```bash
 # Edite config/config.yaml: mode: "FORCED_OFFLINE"
-python main.py listener & python main.py connectivity-manager & python main.py local-worker & python main.py sync-worker
+python3 main.py listener & python3 main.py connectivity-manager & python3 main.py local-worker & python3 main.py sync-worker
 ```
 
 **Parar todos:**
