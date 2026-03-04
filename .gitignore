@@ -60,3 +60,6 @@ Thumbs.db
 *.key
 *.pem
 secrets/
+.env
+.env.*
+config/config.yaml

@@ -1,157 +1,209 @@
-# Backend Local MIQA
+# MIQA Backend Local
 
-Sistema edge para processamento de imagens médicas com fallback offline.
+Edge AI system for medical image quality assessment with offline fallback and decentralized storage via Filecoin/IPFS.
 
-## 🎯 Objetivo
+Built by [WingsAI](https://wingsai.com.br) — open-source medical AI infrastructure for the Global South.
 
-Processar imagens médicas localmente quando não há conectividade com a nuvem, garantindo que o hospital continue operando mesmo com internet instável.
+**License:** MIT + Apache 2.0
 
-## 📁 Estrutura
+---
+
+## 🎯 What It Does
+
+Processes medical images (MRI, CT, Ultrasound) directly on hospital devices:
+- Runs AI quality assessment **fully offline** when internet is unavailable
+- Syncs results to production API when connectivity returns
+- Publishes results to **Filecoin/IPFS** for verifiable, sovereignty-respecting data storage
+
+## 📁 Structure
 
 ```
-Backend_local/
-├── edge/                    # Detecção e ingestão de imagens
-├── cloud_client/            # Cliente HTTP para nuvem
-├── local_processing/        # Processamento offline
-├── metrics/                 # Sistema de métricas
-├── db/                      # SQLite e migrations
-├── connectivity/            # Gerenciamento de conectividade
-├── config/                  # Arquivos de configuração
-├── utils/                   # Utilitários
-├── tests/                   # Testes
-├── docs/                    # Documentação
-├── main.py                  # CLI principal
-└── requirements.txt         # Dependências
+MIQA_Backend_Local/
+├── edge/                    # Image detection and ingestion (watchdog)
+├── cloud_client/            # HTTP client for production API
+├── local_processing/        # Offline AI processing (MRI, CT, US heuristics)
+├── filecoin/                # Filecoin/IPFS decentralized storage layer
+│   ├── ipfs_client.py       # IPFS upload client (Lighthouse + Web3.Storage)
+│   └── worker.py            # FilecoinWorker — publishes results to IPFS
+├── metrics/                 # Observability and sync
+├── db/                      # SQLite + migrations
+│   └── migrations/
+│       ├── 001_initial.sql
+│       └── 002_filecoin_columns.sql
+├── connectivity/            # Connectivity state management
+├── config/                  # config.yaml (git-ignored — contains secrets)
+├── utils/                   # Logging, file stability
+├── docs/                    # Architecture, usage guide, testing
+├── .env.example             # Environment variables template
+├── main.py                  # CLI entry point
+└── requirements.txt
 ```
 
 ## 🚀 Quick Start
 
-### 1. Instalar Dependências
+### 1. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Inicializar Banco de Dados
+### 2. Configure environment
+
+```bash
+cp .env.example .env
+# Edit .env and add your Lighthouse API key
+```
+
+Get a free Lighthouse API key at [lighthouse.storage](https://lighthouse.storage).
+
+### 3. Configure the system
+
+Edit `config/config.yaml`:
+- `device_id`: unique identifier for this hospital device
+- `mode`: `AUTO` or `FORCED_OFFLINE`
+- `cloud.api_url`: production API URL
+- `filecoin.enabled`: `true` to activate IPFS publishing
+
+```yaml
+filecoin:
+  enabled: true
+  backend: lighthouse        # or "w3s" for Web3.Storage
+  api_key: ""                # set via LIGHTHOUSE_API_KEY env var instead
+  worker_interval: 30        # seconds between IPFS publishing cycles
+  upload_images: true        # set false to publish only result manifests
+```
+
+### 4. Initialize database
 
 ```bash
 python main.py init-db
+# Apply Filecoin migration
+sqlite3 db/miqa.db < db/migrations/002_filecoin_columns.sql
 ```
 
-### 3. Configurar
+### 5. Start services
 
-Edite `config/config.yaml` conforme necessário.
-
-### 4. Iniciar Serviços
-
-**Modo AUTO (com internet):**
+**AUTO mode (with internet):**
 ```bash
-python3 main.py listener & python3 main.py connectivity-manager & python3 main.py cloud-worker & python3 main.py local-worker & python3 main.py sync-worker
+python main.py listener &
+python main.py connectivity-manager &
+python main.py cloud-worker &
+python main.py local-worker &
+python main.py sync-worker
 ```
 
-**Modo FORCED_OFFLINE (sem internet):**
+**FORCED_OFFLINE mode:**
 ```bash
-# Edite config/config.yaml: mode: "FORCED_OFFLINE"
-python3 main.py listener & python3 main.py connectivity-manager & python3 main.py local-worker & python3 main.py sync-worker
+# Set mode: "FORCED_OFFLINE" in config/config.yaml
+python main.py listener &
+python main.py connectivity-manager &
+python main.py local-worker &
+python main.py sync-worker
 ```
 
-**Parar todos:**
+**Stop all:**
 ```bash
 pkill -f "main.py"
 ```
 
-## 📖 Comandos Disponíveis
+## 📖 CLI Commands
 
 ```bash
-# Ver todos os comandos
-python main.py --help
-
-# Inicializar banco de dados
-python main.py init-db
-
-# Monitorar pasta
-python main.py listener
-
-# Gerenciar conectividade
-python main.py connectivity-manager
-
-# Worker de nuvem
-python main.py cloud-worker
-
-# Worker local
-python main.py local-worker
-
-# Ver status
-python main.py status
+python main.py --help              # List all commands
+python main.py init-db             # Initialize SQLite database
+python main.py listener            # Monitor watch/ directory for new images
+python main.py connectivity-manager  # Monitor cloud API health
+python main.py cloud-worker        # Upload images to production API (online)
+python main.py local-worker        # Process images locally (offline)
+python main.py sync-worker         # Sync offline results to API when reconnected
+python main.py status              # Show system status
 ```
 
-## 🔧 Configuração
-
-Edite `config/config.yaml`:
-
-- `device_id`: Identificador único do dispositivo
-- `mode`: `AUTO` ou `FORCED_OFFLINE`
-- `directories.watch`: Pasta monitorada
-- `cloud.api_url`: URL da API de produção
-
-## Documentação
-
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Arquitetura técnica
-- [docs/GUIA_DE_USO.md](docs/GUIA_DE_USO.md) - Guia para operadores
-- [docs/TESTING.md](docs/TESTING.md) - Testes e troubleshooting
-
-## 🏥 Uso em Hospital
-
-1. Configurar `device_id` único para cada dispositivo
-2. Apontar `cloud.api_url` para API de produção
-3. Iniciar todos os serviços
-4. Copiar imagens para pasta `watch/`
-5. Sistema processa automaticamente
-
-## 🔄 Fluxo de Processamento
+## 🔄 Processing Flow
 
 ```
-Imagem detectada → Fila SQLite → Verificar conectividade
-                                        ↓
-                        ┌───────────────┴───────────────┐
-                        ↓                               ↓
-                    ONLINE                          OFFLINE
-                        ↓                               ↓
-                Enviar para nuvem              Processar localmente
-                        ↓                               ↓
-                Resultado da API              Salvar em results/
+Image detected → SHA256 uid → SQLite queue → Check connectivity
+                                                      ↓
+                                     ┌────────────────┴────────────────┐
+                                     ↓                                 ↓
+                                  ONLINE                           OFFLINE
+                                     ↓                                 ↓
+                             Cloud Worker                       Local Worker
+                             (API upload)                   (local AI model)
+                                     ↓                                 ↓
+                              results/online/                 results/offline/
+                                     └────────────────┬────────────────┘
+                                                      ↓
+                                             FilecoinWorker
+                                      (publishes to IPFS/Filecoin)
+                                                      ↓
+                                    image CID + manifest CID → results/ipfs/
 ```
 
-## 🛠️ Desenvolvimento
+## 🌐 Filecoin/IPFS Integration
 
-### Status das Tarefas
+Every processed image and its AI result is published to Filecoin via IPFS:
 
-| Tarefa | Status |
-|--------|--------|
-| 1. Bootstrap | ✅ Concluído |
-| 2. SQLite | ✅ Concluído |
-| 3. Ingestão | ✅ Concluído |
-| 4. Arquivo Parcial | ✅ Concluído |
-| 5. Connectivity | ✅ Concluído |
-| 6. Cloud Worker | ✅ Concluído |
-| 7. Local Worker | ✅ Concluído |
-| 8. Métricas | ✅ Concluído |
+- **Image CID**: immutable content address of the original medical image
+- **Manifest CID**: JSON linking the image CID + MIQA quality score + metadata
 
-**Todas as 8 tarefas críticas foram concluídas.**
+This gives hospitals:
+- **Data sovereignty**: results stored on a decentralized network, not a single vendor
+- **Auditability**: any regulator can verify results using the CID (cryptographic proof)
+- **Reproducibility**: results are independently verifiable by other institutions
 
-### Próximos Passos
+Results are saved locally at `results/ipfs/<item_uid>.json`:
+```json
+{
+  "item_uid": "sha256...",
+  "image_cid": "bafy2bzace...",
+  "manifest_cid": "bafy2bzace...",
+  "image_gateway": "https://gateway.lighthouse.storage/ipfs/bafy...",
+  "manifest_gateway": "https://gateway.lighthouse.storage/ipfs/bafy...",
+  "published_at": 1741123456.7,
+  "miqa_result": { ... }
+}
+```
 
-1. Tarefa 9: Exportação de métricas (P1)
-2. Tarefa 10: Criptografia (P2)
-3. Tarefa 11: Limpeza automática (P2)
-4. Tarefa 12: Testes automatizados (P1)
-5. Deploy no hospital
+## 🏥 Hospital Deployment
 
-## 📄 Licença
+1. Set a unique `device_id` for each device
+2. Point `cloud.api_url` to the production API
+3. Add `LIGHTHOUSE_API_KEY` to `.env`
+4. Drop images into `watch/mri/`, `watch/ct/`, or `watch/us/`
+5. System processes automatically
 
-Propriedade de WingsAI - Uso interno
+## 🛠️ Development Status
+
+| Task | Status |
+|------|--------|
+| Bootstrap & SQLite | ✅ Done |
+| Image ingestion (watchdog) | ✅ Done |
+| Partial file detection | ✅ Done |
+| Connectivity management | ✅ Done |
+| Cloud Worker | ✅ Done |
+| Local Worker (MRI/CT/US) | ✅ Done |
+| Metrics & observability | ✅ Done |
+| **Filecoin/IPFS integration** | ✅ Done (04/03/2026) |
+| Metrics export | 🔲 P1 |
+| Encryption at rest | 🔲 P2 |
+| Automated cleanup | 🔲 P2 |
+| Automated tests | 🔲 P1 |
+
+## 📄 Documentation
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — system architecture
+- [docs/GUIA_DE_USO.md](docs/GUIA_DE_USO.md) — operator guide (PT-BR)
+- [docs/TESTING.md](docs/TESTING.md) — testing and troubleshooting
+
+## 🤝 Contributing
+
+This project is open-source (MIT + Apache 2.0). Contributions welcome, especially:
+- DICOM SCP receiver implementation
+- Additional modality heuristics
+- IPFS backend integrations
 
 ---
 
-**Versão:** 1.0.0
-**Última atualização:** 2026-01-14
+**Version:** 1.1.0
+**Last updated:** 2026-03-04
