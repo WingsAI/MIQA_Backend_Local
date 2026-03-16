@@ -1,0 +1,77 @@
+name: risk-policy-gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  gate:
+    name: risk-policy-gate
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      statuses: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed files and risk tier
+        id: risk
+        run: |
+          BASE=${{ github.event.pull_request.base.sha }}
+          HEAD=${{ github.event.pull_request.head.sha }}
+          CHANGED=$(git diff --name-only "$BASE" "$HEAD")
+          echo "Changed files:"
+          echo "$CHANGED"
+
+          TIER="low"
+
+          # High-risk paths
+          if echo "$CHANGED" | grep -qE '^(local_processing/|db/migrations/|db/repository\.py|filecoin/|config/|main\.py)'; then
+            TIER="high"
+          # Medium-risk paths (only if not already high)
+          elif echo "$CHANGED" | grep -qE '^(cloud_client/|connectivity/|metrics/|edge/)'; then
+            TIER="medium"
+          fi
+
+          echo "tier=$TIER" >> "$GITHUB_OUTPUT"
+          echo "Detected risk tier: $TIER"
+
+      - name: Enforce policy
+        run: |
+          TIER="${{ steps.risk.outputs.tier }}"
+          echo "Risk tier: $TIER"
+
+          if [ "$TIER" = "high" ]; then
+            echo "HIGH risk — CI tests + lint required before merge."
+            echo "Ensure 'ci / test' and 'ci / lint' checks pass."
+          elif [ "$TIER" = "medium" ]; then
+            echo "MEDIUM risk — CI tests required before merge."
+          else
+            echo "LOW risk — only this gate required."
+          fi
+
+          echo "RISK_TIER=$TIER" >> "$GITHUB_ENV"
+
+      - name: Write tier summary
+        run: |
+          echo "## Risk Policy Gate" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Tier:** \`${{ steps.risk.outputs.tier }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          case "${{ steps.risk.outputs.tier }}" in
+            high)
+              echo "**Required checks:** \`ci / test\`, \`ci / lint\`" >> "$GITHUB_STEP_SUMMARY"
+              echo "Paths changed include AI core, DB migrations, Filecoin, or main entry point." >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            medium)
+              echo "**Required checks:** \`ci / test\`" >> "$GITHUB_STEP_SUMMARY"
+              echo "Paths changed include cloud client, connectivity, metrics, or edge." >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            low)
+              echo "**Required checks:** this gate only" >> "$GITHUB_STEP_SUMMARY"
+              echo "Docs, utils, or config-only changes." >> "$GITHUB_STEP_SUMMARY"
+              ;;
+          esac

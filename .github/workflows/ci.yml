@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Wait for risk-policy-gate to complete before running expensive jobs
+# This is enforced via branch protection rules (require risk-policy-gate to pass first)
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt flake8
+
+      - name: Run lint
+        run: flake8 . --max-line-length=120 --exclude=.git,__pycache__
+
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest pytest-cov
+
+      - name: Initialize test DB
+        run: |
+          python main.py init-db || true
+          sqlite3 db/miqa.db < db/migrations/002_filecoin_columns.sql || true
+
+      - name: Run tests
+        run: pytest --cov=. --cov-report=term-missing -v
+        env:
+          MIQA_ENV: test
