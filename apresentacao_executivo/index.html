@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIQA — Apresentação Executiva</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-mid: #1a2f52;
+    --navy-light: #2a4a7f;
+    --gold: #b8972a;
+    --gold-light: #d4b04a;
+    --gold-pale: #f5edd8;
+    --cream: #faf8f4;
+    --white: #ffffff;
+    --gray-100: #f4f2ee;
+    --gray-200: #e8e4dc;
+    --gray-400: #9a9488;
+    --gray-600: #5a5650;
+    --gray-800: #2a2820;
+    --text: #1a1814;
+    --text-secondary: #4a4640;
+    --danger: #8b1a1a;
+    --success: #1a5c2e;
+    --warn: #b8972a;
+    --page-width: 880px;
+    --margin: 64px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #d4cfc6;
+    font-family: 'EB Garamond', Georgia, serif;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 40px 20px;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, #c8c2b4 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, #bfb9ac 0%, transparent 60%);
+  }
+  .document-shadow {
+    max-width: var(--page-width);
+    margin: 0 auto;
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.08),
+      0 8px 24px rgba(0,0,0,0.12),
+      0 24px 64px rgba(0,0,0,0.16),
+      0 48px 96px rgba(0,0,0,0.10);
+  }
+  .page { background: var(--white); width: 100%; position: relative; overflow: hidden; }
+  .page + .page { border-top: 1px solid var(--gray-200); }
+
+  /* COVER */
+  .cover { min-height: 1123px; display: flex; flex-direction: column; background: var(--white); position: relative; }
+  .cover-top-bar { height: 8px; background: linear-gradient(90deg, var(--navy) 0%, var(--navy-light) 50%, var(--gold) 100%); }
+  .cover-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 40px var(--margin) 0; }
+  .cover-logo-box { width: 56px; height: 56px; background: var(--navy); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .cover-logo-box::before { content: ''; position: absolute; width: 30px; height: 30px; border: 3px solid var(--gold); border-radius: 50%; }
+  .cover-logo-box::after { content: ''; position: absolute; width: 14px; height: 14px; background: var(--gold); border-radius: 50%; }
+  .cover-org { font-family: 'Source Sans 3', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gray-400); margin-top: 8px; }
+  .cover-doc-info { text-align: right; font-family: 'Source Sans 3', sans-serif; font-size: 10px; color: var(--gray-400); line-height: 1.8; letter-spacing: 0.5px; }
+  .cover-main { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 60px var(--margin); position: relative; }
+  .cover-watermark { position: absolute; right: 48px; top: 50%; transform: translateY(-50%); font-family: 'EB Garamond', serif; font-size: 220px; font-weight: 700; color: var(--gray-100); line-height: 1; user-select: none; pointer-events: none; letter-spacing: -10px; }
+  .cover-eyebrow { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; }
+  .cover-title { font-size: 60px; font-weight: 600; line-height: 1.05; color: var(--navy); margin-bottom: 14px; position: relative; z-index: 1; letter-spacing: -0.02em; }
+  .cover-title span { color: var(--gold); }
+  .cover-subtitle { font-size: 22px; font-weight: 400; color: var(--text-secondary); margin-bottom: 40px; line-height: 1.5; position: relative; z-index: 1; max-width: 640px; }
+  .cover-divider { width: 80px; height: 3px; background: var(--gold); margin-bottom: 36px; }
+  .cover-tagline { font-size: 17px; line-height: 1.7; color: var(--text-secondary); max-width: 560px; position: relative; z-index: 1; }
+  .cover-footer { padding: 28px var(--margin); display: flex; justify-content: space-between; align-items: flex-end; border-top: 2px solid var(--navy); }
+  .cover-footer-classification { font-family: 'Source Sans 3', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--danger); border: 1px solid var(--danger); padding: 4px 10px; }
+  .cover-footer-meta { font-family: 'Source Sans 3', sans-serif; font-size: 11px; color: var(--gray-400); text-align: right; line-height: 1.6; }
+
+  /* INNER */
+  .inner-page { padding: 56px var(--margin); position: relative; }
+  .page-header-rule { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; padding-bottom: 12px; border-bottom: 2px solid var(--navy); }
+  .page-header-left { font-family: 'Source Sans 3', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); }
+  .page-header-right { font-family: 'Source Sans 3', sans-serif; font-size: 10px; color: var(--gray-400); letter-spacing: 0.5px; }
+  .section-number { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  h2 { font-size: 34px; font-weight: 600; color: var(--navy); line-height: 1.1; margin-bottom: 22px; letter-spacing: -0.02em; }
+  h3 { font-size: 19px; font-weight: 600; color: var(--navy); margin: 32px 0 12px; display: flex; align-items: center; gap: 12px; }
+  h3::before { content: ''; display: inline-block; width: 4px; height: 18px; background: var(--gold); flex-shrink: 0; }
+  p { font-size: 16px; line-height: 1.78; color: var(--text); margin-bottom: 14px; }
+  .lead { font-size: 19px; line-height: 1.65; color: var(--text-secondary); margin-bottom: 30px; padding-left: 22px; border-left: 3px solid var(--gold); }
+  strong { color: var(--navy); font-weight: 600; }
+  em { color: var(--text-secondary); }
+
+  /* CALLOUTS */
+  .callout { background: var(--navy); color: var(--white); padding: 26px 30px; margin: 30px 0; position: relative; }
+  .callout::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--gold); }
+  .callout-label { font-family: 'Source Sans 3', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .callout p { color: rgba(255,255,255,0.95); margin-bottom: 0; font-size: 16px; line-height: 1.65; }
+  .callout strong { color: var(--gold-light); }
+  .callout-highlight { background: var(--gold-pale); border: 1px solid var(--gold-light); border-left: 4px solid var(--gold); padding: 22px 26px; margin: 22px 0; }
+  .callout-highlight p { color: var(--gray-800); margin-bottom: 0; font-size: 16px; }
+
+  /* PAIN BOX */
+  .pain-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 32px 0; border: 1px solid var(--gray-200); }
+  .pain-stat { padding: 28px 22px; border-right: 1px solid var(--gray-200); text-align: center; background: var(--cream); }
+  .pain-stat:last-child { border-right: none; }
+  .pain-stat-value { font-family: 'EB Garamond', serif; font-size: 42px; font-weight: 700; color: var(--danger); line-height: 1; margin-bottom: 8px; }
+  .pain-stat-label { font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; color: var(--gray-600); line-height: 1.4; }
+
+  /* FLOWCHART - the heart of the doc */
+  .flow-container { margin: 36px 0; padding: 30px 0; }
+  .flow-step { display: flex; align-items: flex-start; gap: 24px; padding: 24px 20px; position: relative; background: var(--cream); border-left: 4px solid var(--gold); margin-bottom: 16px; }
+  .flow-step-num { width: 52px; height: 52px; min-width: 52px; background: var(--navy); color: var(--gold); display: flex; align-items: center; justify-content: center; font-family: 'EB Garamond', serif; font-weight: 700; font-size: 22px; border: 2px solid var(--gold); }
+  .flow-step-body h4 { font-family: 'EB Garamond', serif; font-size: 20px; color: var(--navy); margin-bottom: 6px; font-weight: 600; }
+  .flow-step-body p { font-size: 15px; color: var(--text-secondary); margin-bottom: 0; line-height: 1.6; }
+  .flow-arrow { text-align: center; font-family: 'EB Garamond', serif; font-size: 36px; color: var(--gold); line-height: 0.8; margin: -4px 0; user-select: none; }
+
+  /* NOTE CARDS (traffic-light style) */
+  .notes-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0; }
+  .note-card { padding: 22px; border: 2px solid var(--gray-200); background: var(--white); text-align: center; position: relative; }
+  .note-card.ok { border-color: var(--success); }
+  .note-card.warn { border-color: var(--warn); }
+  .note-card.bad { border-color: var(--danger); }
+  .note-card-badge { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; padding: 4px 10px; display: inline-block; }
+  .note-card.ok .note-card-badge { color: var(--success); background: rgba(26,92,46,0.08); }
+  .note-card.warn .note-card-badge { color: var(--warn); background: rgba(184,151,42,0.1); }
+  .note-card.bad .note-card-badge { color: var(--danger); background: rgba(139,26,26,0.08); }
+  .note-card-title { font-family: 'EB Garamond', serif; font-size: 22px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+  .note-card-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* RESULTS TABLE */
+  .results-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 15px; }
+  .results-table thead tr { background: var(--navy); color: var(--white); }
+  .results-table thead th { padding: 14px 16px; text-align: left; font-family: 'Source Sans 3', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+  .results-table tbody tr { border-bottom: 1px solid var(--gray-200); }
+  .results-table tbody tr:nth-child(even) { background: var(--cream); }
+  .results-table tbody td { padding: 14px 16px; line-height: 1.5; vertical-align: middle; }
+  .results-table .modality { font-weight: 600; color: var(--navy); font-size: 17px; font-family: 'EB Garamond', serif; }
+  .results-table .big-ok { color: var(--success); font-weight: 700; font-family: 'EB Garamond', serif; font-size: 22px; }
+  .results-table .big-bad { color: var(--danger); font-weight: 700; font-family: 'EB Garamond', serif; font-size: 22px; }
+  .results-table .sub { font-size: 12px; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.8px; font-family: 'Source Sans 3', sans-serif; }
+
+  /* ZERO INVASION DIAGRAM */
+  .zi-diagram { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: center; margin: 32px 0; }
+  .zi-box { border: 2px solid var(--gray-200); padding: 22px; background: var(--cream); text-align: center; }
+  .zi-box.hospital { border-color: var(--navy); }
+  .zi-box.miqa { border-color: var(--gold); background: var(--gold-pale); }
+  .zi-box-label { font-family: 'Source Sans 3', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .zi-box-title { font-family: 'EB Garamond', serif; font-size: 20px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+  .zi-box-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+  .zi-cable { font-family: 'EB Garamond', serif; font-size: 14px; color: var(--gold); text-align: center; letter-spacing: 1px; writing-mode: horizontal-tb; font-weight: 600; position: relative; padding: 0 8px; }
+  .zi-cable::before { content: ''; display: block; width: 60px; height: 2px; background: var(--gold); margin: 0 auto 6px; }
+  .zi-cable::after { content: ''; display: block; width: 60px; height: 2px; background: var(--gold); margin: 6px auto 0; }
+
+  .kpi-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 36px 0 12px; }
+  .kpi-hero-box { padding: 28px; background: var(--navy); color: var(--white); position: relative; overflow: hidden; }
+  .kpi-hero-box::before { content: ''; position: absolute; top: 0; right: 0; width: 120px; height: 120px; background: var(--gold); opacity: 0.08; border-radius: 50%; transform: translate(40%, -40%); }
+  .kpi-hero-value { font-family: 'EB Garamond', serif; font-size: 54px; font-weight: 700; color: var(--gold-light); line-height: 1; margin-bottom: 10px; }
+  .kpi-hero-label { font-size: 15px; color: rgba(255,255,255,0.85); line-height: 1.5; }
+
+  ul.simple { list-style: none; padding: 0; }
+  ul.simple li { padding: 11px 0 11px 28px; border-bottom: 1px solid var(--gray-200); position: relative; font-size: 16px; line-height: 1.5; }
+  ul.simple li:last-child { border-bottom: none; }
+  ul.simple li::before { content: ''; position: absolute; left: 6px; top: 20px; width: 10px; height: 2px; background: var(--gold); }
+
+  @media print { body { background: white; padding: 0; } .document-shadow { box-shadow: none; } .page { page-break-after: always; } }
+
+  /* ================= MOBILE ================= */
+  @media (max-width: 780px) {
+    :root { --margin: 22px; }
+    body { padding: 12px 8px; }
+
+    .document-shadow { max-width: 100%; }
+
+    /* Cover */
+    .cover { min-height: auto; }
+    .cover-header { padding: 24px var(--margin) 0; flex-wrap: wrap; gap: 12px; }
+    .cover-logo-box { width: 44px; height: 44px; }
+    .cover-logo-box::before { width: 22px; height: 22px; }
+    .cover-logo-box::after { width: 10px; height: 10px; }
+    .cover-main { padding: 36px var(--margin); }
+    .cover-watermark { font-size: 110px; right: 12px; letter-spacing: -5px; opacity: 0.4; }
+    .cover-title { font-size: 32px; line-height: 1.1; margin-bottom: 12px; }
+    .cover-subtitle { font-size: 16px; margin-bottom: 28px; }
+    .cover-tagline { font-size: 14px; }
+    .cover-footer { padding: 20px var(--margin); flex-wrap: wrap; gap: 14px; }
+    .cover-footer-meta { text-align: left; }
+
+    /* Inner page */
+    .inner-page { padding: 32px var(--margin); }
+    .page-header-rule { margin-bottom: 24px; }
+    .page-header-left { font-size: 9px; letter-spacing: 2px; }
+    .page-header-right { font-size: 9px; }
+    .section-number { font-size: 10px; letter-spacing: 2px; }
+    h2 { font-size: 24px; line-height: 1.15; margin-bottom: 18px; }
+    h3 { font-size: 17px; margin: 24px 0 10px; gap: 8px; }
+    h3::before { width: 3px; height: 15px; }
+    p { font-size: 15px; line-height: 1.68; }
+    .lead { font-size: 16px; padding-left: 14px; margin-bottom: 22px; }
+
+    /* Callouts */
+    .callout { padding: 18px 18px; margin: 22px 0; }
+    .callout p { font-size: 14px; }
+    .callout-highlight { padding: 16px 18px; margin: 18px 0; }
+    .callout-highlight p { font-size: 14px; }
+
+    /* Pain stats (§1): 3 cols → stacked */
+    .pain-stats { grid-template-columns: 1fr; }
+    .pain-stat { padding: 20px 16px; border-right: none; border-bottom: 1px solid var(--gray-200); }
+    .pain-stat:last-child { border-bottom: none; }
+    .pain-stat-value { font-size: 34px; margin-bottom: 6px; }
+    .pain-stat-label { font-size: 11px; }
+
+    /* Flow (§2): sem mudança estrutural, só ajustes */
+    .flow-container { margin: 24px 0; padding: 0; }
+    .flow-step { gap: 14px; padding: 16px 14px; margin-bottom: 12px; }
+    .flow-step-num { width: 42px; height: 42px; min-width: 42px; font-size: 18px; }
+    .flow-step-body h4 { font-size: 17px; margin-bottom: 4px; }
+    .flow-step-body p { font-size: 14px; }
+
+    /* SVG flowchart: já usa viewBox, só garante altura máxima */
+    svg { width: 100% !important; height: auto !important; }
+
+    /* Nota cards (§3): 3 → stacked */
+    .notes-row { grid-template-columns: 1fr; gap: 12px; }
+    .note-card { padding: 18px; }
+    .note-card-title { font-size: 20px; }
+    .note-card-desc { font-size: 13px; }
+
+    /* Results table (§4): esconde coluna LEITURA, renderiza como cartão */
+    .results-table { font-size: 13px; }
+    .results-table thead th { padding: 10px 8px; font-size: 9px; letter-spacing: 0.8px; }
+    .results-table tbody td { padding: 10px 8px; }
+    .results-table thead th:nth-child(5),
+    .results-table tbody td:nth-child(5) { display: none; } /* esconde coluna LEITURA em mobile */
+    .results-table .modality { font-size: 14px; }
+    .results-table .big-ok, .results-table .big-bad { font-size: 17px; }
+    .results-table .sub { font-size: 10px; }
+
+    /* KPI hero (§4): 2 → stacked */
+    .kpi-hero { grid-template-columns: 1fr; gap: 14px; margin: 24px 0 8px; }
+    .kpi-hero-box { padding: 22px; }
+    .kpi-hero-value { font-size: 40px; }
+    .kpi-hero-label { font-size: 13px; }
+
+    /* Zero invasão diagram (§5): 3 col → stacked vertical, cabo vertical */
+    .zi-diagram { grid-template-columns: 1fr; gap: 14px; margin: 24px 0; }
+    .zi-box { padding: 18px; }
+    .zi-cable { font-size: 12px; padding: 8px 0; }
+    .zi-cable::before, .zi-cable::after { width: 2px; height: 28px; margin: 0 auto; display: block; }
+
+    ul.simple li { font-size: 14px; padding: 9px 0 9px 22px; }
+    ul.simple li::before { top: 17px; width: 8px; }
+  }
+
+  @media (max-width: 480px) {
+    :root { --margin: 16px; }
+    .cover-title { font-size: 26px; }
+    h2 { font-size: 20px; }
+    .cover-watermark { display: none; }
+    .results-table thead th:nth-child(2),
+    .results-table tbody td:nth-child(2) { font-size: 11px; } /* imagens testadas menor */
+
+    /* SVG flowchart fica ilegível em mobile pequeno — esconde (os 4 flow-steps transmitem tudo) */
+    .hide-on-mobile { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="document-shadow">
+
+<!-- ============ COVER ============ -->
+<div class="page cover">
+  <div class="cover-top-bar"></div>
+  <div class="cover-header">
+    <div>
+      <div class="cover-logo-box"></div>
+      <div class="cover-org">WingsAI &nbsp;·&nbsp; MIQA</div>
+    </div>
+    <div class="cover-doc-info">
+      APRESENTAÇÃO EXECUTIVA<br>
+      PARA DIRETORIA<br>
+      VERSÃO 2
+    </div>
+  </div>
+
+  <div class="cover-main">
+    <div class="cover-watermark">M</div>
+    <div class="cover-eyebrow">Apresentação Executiva</div>
+    <h1 class="cover-title">Cada imagem médica com <span>garantia</span> de qualidade.</h1>
+    <div class="cover-subtitle">Uma inteligência artificial que avalia, em tempo real, se o exame de imagem está bom o suficiente para liberar o paciente — ou se precisa ser refeito antes que ele vá embora.</div>
+    <div class="cover-divider"></div>
+    <p class="cover-tagline">
+      Sem mudar o aparelho. Sem alterar a rotina do hospital. Sem treinar ninguém de novo. <strong>Basta conectar um cabo.</strong>
+    </p>
+  </div>
+
+  <div class="cover-footer">
+    <div class="cover-footer-classification">CONFIDENCIAL</div>
+    <div class="cover-footer-meta">
+      WingsAI &middot; MIQA<br>
+      Preparado para Diretoria Executiva
+    </div>
+  </div>
+</div>
+
+<!-- ============ 01 · A DOR ============ -->
+<div class="page">
+  <div class="inner-page">
+    <div class="page-header-rule">
+      <div class="page-header-left">01 &middot; O Problema</div>
+      <div class="page-header-right">MIQA</div>
+    </div>
+
+    <div class="section-number">A DOR QUE NINGUÉM RESOLVEU AINDA</div>
+    <h2>Muita imagem médica sai do aparelho ruim — e ninguém percebe a tempo.</h2>
+
+    <p class="lead">
+      O paciente faz a radiografia, o ultrassom, a tomografia. Volta para casa. Dois dias depois, o radiologista abre o exame e percebe que a imagem está borrada, cortada ou mal posicionada. O paciente precisa ser chamado de volta. O hospital refaz. O convênio paga duas vezes. O tempo de diagnóstico atrasa.
+    </p>
+
+    <div class="pain-stats">
+      <div class="pain-stat">
+        <div class="pain-stat-value">20%</div>
+        <div class="pain-stat-label">DAS IMAGENS PRECISAM SER REFEITAS<br>em serviços sem controle ativo de qualidade<br>(literatura internacional)</div>
+      </div>
+      <div class="pain-stat">
+        <div class="pain-stat-value">R$ 180+</div>
+        <div class="pain-stat-label">CUSTO MÉDIO DE UMA REPETIÇÃO<br>(insumo + sala + técnico + paciente chamado de volta)</div>
+      </div>
+      <div class="pain-stat">
+        <div class="pain-stat-value">48h</div>
+        <div class="pain-stat-label">ATRASO TÍPICO NO DIAGNÓSTICO<br>quando a repetição só é detectada<br>na leitura do radiologista</div>
+      </div>
+    </div>
+
+    <h3>Por que isso acontece?</h3>
+    <ul class="simple">
+      <li>O técnico que opera o aparelho não é o profissional que lê a imagem. O julgamento de qualidade fica para depois.</li>
+      <li>Não existe critério objetivo para dizer na hora se a imagem &quot;passou&quot;. É intuição do técnico.</li>
+      <li>Quando o erro aparece, o paciente já foi embora. Chamar de volta gera fricção com o convênio e com a família.</li>
+      <li>Em casos urgentes (UTI, emergência), atrasar diagnóstico atrasa tratamento.</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-label">EM UMA FRASE</div>
+      <p>O hospital perde dinheiro, tempo e credibilidade toda vez que uma imagem ruim é aceita. O MIQA existe para impedir isso — na hora, sem atrito.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 02 · FLUXOGRAMA MIQA ============ -->
+<div class="page">
+  <div class="inner-page">
+    <div class="page-header-rule">
+      <div class="page-header-left">02 &middot; Como Funciona</div>
+      <div class="page-header-right">MIQA</div>
+    </div>
+
+    <div class="section-number">O FLUXO EM QUATRO PASSOS</div>
+    <h2>Da captura da imagem à decisão do técnico, em segundos.</h2>
+
+    <p class="lead">
+      Tudo o que já existe no hospital continua existindo. O MIQA entra como uma camada extra — silenciosa, paralela, rápida. O técnico recebe uma nota clara logo depois da imagem sair do aparelho.
+    </p>
+
+    <!-- SVG FLOWCHART (oculto em mobile pequeno — flow-steps abaixo já comunicam) -->
+    <svg class="hide-on-mobile" viewBox="0 0 780 440" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; margin: 28px 0;">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#b8972a"/>
+        </marker>
+        <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0a1628" flood-opacity="0.12"/>
+        </filter>
+      </defs>
+
+      <!-- Stage 1: Aparelho no hospital -->
+      <g filter="url(#soft)">
+        <rect x="30" y="60" width="170" height="110" rx="2" fill="#faf8f4" stroke="#0a1628" stroke-width="2"/>
+        <text x="115" y="90" font-family="Source Sans 3" font-size="10" font-weight="700" letter-spacing="2" fill="#b8972a" text-anchor="middle">NO HOSPITAL</text>
+        <!-- Aparelho stylized icon -->
+        <rect x="85" y="100" width="60" height="32" rx="2" fill="#0a1628"/>
+        <rect x="95" y="108" width="40" height="16" rx="1" fill="#b8972a"/>
+        <rect x="100" y="132" width="30" height="6" fill="#0a1628"/>
+        <rect x="105" y="138" width="20" height="4" fill="#0a1628"/>
+        <text x="115" y="158" font-family="EB Garamond" font-size="14" font-weight="600" fill="#0a1628" text-anchor="middle">Aparelho captura</text>
+      </g>
+
+      <!-- Arrow 1 -->
+      <line x1="205" y1="115" x2="250" y2="115" stroke="#b8972a" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="227" y="108" font-family="Source Sans 3" font-size="9" fill="#5a5650" text-anchor="middle" letter-spacing="1">CÓPIA</text>
+
+      <!-- Stage 2: MIQA recebe -->
+      <g filter="url(#soft)">
+        <rect x="255" y="60" width="170" height="110" rx="2" fill="#f5edd8" stroke="#b8972a" stroke-width="2"/>
+        <text x="340" y="90" font-family="Source Sans 3" font-size="10" font-weight="700" letter-spacing="2" fill="#b8972a" text-anchor="middle">MIQA · NUVEM</text>
+        <!-- IA brain stylized -->
+        <circle cx="340" cy="125" r="22" fill="none" stroke="#0a1628" stroke-width="2"/>
+        <circle cx="328" cy="118" r="3" fill="#b8972a"/>
+        <circle cx="352" cy="118" r="3" fill="#b8972a"/>
+        <circle cx="340" cy="132" r="3" fill="#b8972a"/>
+        <line x1="328" y1="118" x2="352" y2="118" stroke="#0a1628" stroke-width="1"/>
+        <line x1="328" y1="118" x2="340" y2="132" stroke="#0a1628" stroke-width="1"/>
+        <line x1="352" y1="118" x2="340" y2="132" stroke="#0a1628" stroke-width="1"/>
+        <text x="340" y="158" font-family="EB Garamond" font-size="14" font-weight="600" fill="#0a1628" text-anchor="middle">IA analisa</text>
+      </g>
+
+      <!-- Arrow 2 -->
+      <line x1="430" y1="115" x2="475" y2="115" stroke="#b8972a" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="452" y="108" font-family="Source Sans 3" font-size="9" fill="#5a5650" text-anchor="middle" letter-spacing="1">2-5 s</text>
+
+      <!-- Stage 3: Nota -->
+      <g filter="url(#soft)">
+        <rect x="480" y="60" width="250" height="110" rx="2" fill="#faf8f4" stroke="#0a1628" stroke-width="2"/>
+        <text x="605" y="90" font-family="Source Sans 3" font-size="10" font-weight="700" letter-spacing="2" fill="#b8972a" text-anchor="middle">RETORNO AO TÉCNICO</text>
+        <!-- Traffic-light notas -->
+        <rect x="505" y="100" width="60" height="56" rx="2" fill="#1a5c2e"/>
+        <text x="535" y="123" font-family="EB Garamond" font-size="22" font-weight="700" fill="white" text-anchor="middle">A</text>
+        <text x="535" y="145" font-family="Source Sans 3" font-size="9" font-weight="700" fill="white" text-anchor="middle">LIBERAR</text>
+        <rect x="575" y="100" width="60" height="56" rx="2" fill="#b8972a"/>
+        <text x="605" y="123" font-family="EB Garamond" font-size="22" font-weight="700" fill="white" text-anchor="middle">B</text>
+        <text x="605" y="145" font-family="Source Sans 3" font-size="9" font-weight="700" fill="white" text-anchor="middle">REVISAR</text>
+        <rect x="645" y="100" width="60" height="56" rx="2" fill="#8b1a1a"/>
+        <text x="675" y="123" font-family="EB Garamond" font-size="22" font-weight="700" fill="white" text-anchor="middle">C</text>
+        <text x="675" y="145" font-family="Source Sans 3" font-size="9" font-weight="700" fill="white" text-anchor="middle">REFAZER</text>
+      </g>
+
+      <!-- Decision path down -->
+      <line x1="605" y1="180" x2="605" y2="230" stroke="#b8972a" stroke-width="2" marker-end="url(#arrow)"/>
+
+      <!-- Final row: tech decides -->
+      <g filter="url(#soft)">
+        <rect x="230" y="240" width="500" height="150" rx="2" fill="#0a1628" stroke="#b8972a" stroke-width="2"/>
+        <text x="480" y="270" font-family="Source Sans 3" font-size="10" font-weight="700" letter-spacing="2" fill="#b8972a" text-anchor="middle">O TÉCNICO RECEBE E DECIDE</text>
+        <text x="480" y="305" font-family="EB Garamond" font-style="italic" font-size="18" fill="#faf8f4" text-anchor="middle">&quot;A imagem passou. Libere o paciente.&quot;</text>
+        <text x="480" y="335" font-family="EB Garamond" font-style="italic" font-size="18" fill="#d4b04a" text-anchor="middle">&quot;Problema detectado. Refaça antes de liberar.&quot;</text>
+        <text x="480" y="370" font-family="Source Sans 3" font-size="11" fill="#9a9488" text-anchor="middle" letter-spacing="0.5">Tudo na mesma tela do aparelho &mdash; sem abrir outro sistema.</text>
+      </g>
+
+      <!-- Arrow from nota to decision -->
+      <line x1="115" y1="180" x2="115" y2="280" stroke="#b8972a" stroke-width="2"/>
+      <line x1="115" y1="280" x2="225" y2="280" stroke="#b8972a" stroke-width="2" marker-end="url(#arrow)"/>
+      <line x1="340" y1="180" x2="340" y2="250" stroke="#b8972a" stroke-width="2"/>
+    </svg>
+
+    <div class="flow-container">
+      <div class="flow-step">
+        <div class="flow-step-num">1</div>
+        <div class="flow-step-body">
+          <h4>O aparelho captura a imagem</h4>
+          <p>Raio-X, ultrassom ou tomografia. Nada muda aqui &mdash; é exatamente o que o hospital já faz hoje.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">2</div>
+        <div class="flow-step-body">
+          <h4>Uma cópia da imagem é enviada ao MIQA</h4>
+          <p>Um cabo físico ou uma integração de rede envia uma cópia exata para a nuvem do MIQA. O arquivo original continua onde sempre esteve.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">3</div>
+        <div class="flow-step-body">
+          <h4>A IA analisa em segundos e devolve uma nota</h4>
+          <p>Três possibilidades: <strong>A · liberar</strong> (imagem boa), <strong>B · revisar</strong> (dúvida, sugere olhar), <strong>C · refazer</strong> (imagem não serve). Tempo médio: 2 a 5 segundos.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">4</div>
+        <div class="flow-step-body">
+          <h4>O técnico recebe a nota e decide</h4>
+          <p>Na mesma tela onde o técnico já trabalha. Se a nota for A, libera o paciente. Se for C, pede para repetir antes de liberar. Decisão em segundos &mdash; o paciente ainda está na sala.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 03 · A NOTA EM DETALHE ============ -->
+<div class="page">
+  <div class="inner-page">
+    <div class="page-header-rule">
+      <div class="page-header-left">03 &middot; A Nota</div>
+      <div class="page-header-right">MIQA</div>
+    </div>
+
+    <div class="section-number">TRÊS NOTAS POSSÍVEIS</div>
+    <h2>Simples de entender. Fácil de agir.</h2>
+
+    <p class="lead">
+      O técnico não precisa interpretar número, gráfico ou código de erro. Recebe uma das três notas abaixo, em texto claro, na mesma tela em que já opera.
+    </p>
+
+    <div class="notes-row">
+      <div class="note-card ok">
+        <div class="note-card-badge">NOTA A</div>
+        <div class="note-card-title">Liberar</div>
+        <div class="note-card-desc">Imagem boa o suficiente para diagnóstico. O paciente pode ser dispensado. A imagem segue pro radiologista sem problemas.</div>
+      </div>
+      <div class="note-card warn">
+        <div class="note-card-badge">NOTA B</div>
+        <div class="note-card-title">Revisar</div>
+        <div class="note-card-desc">Imagem com alguma imperfeição aceitável. Sugestão: técnico dá uma segunda olhada. Pode liberar, mas sabendo que o radiologista pode pedir reforço depois.</div>
+      </div>
+      <div class="note-card bad">
+        <div class="note-card-badge">NOTA C</div>
+        <div class="note-card-title">Refazer</div>
+        <div class="note-card-desc">Problema detectado que impede diagnóstico confiável. Refazer antes de liberar o paciente. Com motivo objetivo: borrado, mal posicionado, exposição errada, artefato visível.</div>
+      </div>
+    </div>
+
+    <div class="callout-highlight">
+      <p><strong>Por que três notas e não só &quot;passou / não passou&quot;?</strong> A nota B existe para não forçar repetições desnecessárias. Muitas imagens são boas o suficiente apesar de imperfeitas. O sistema sinaliza a imperfeição sem obrigar refazer &mdash; o técnico decide, com informação.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 04 · RESULTADOS DE QUANTO O SISTEMA ERRA ============ -->
+<div class="page">
+  <div class="inner-page">
+    <div class="page-header-rule">
+      <div class="page-header-left">04 &middot; Precisão do Sistema</div>
+      <div class="page-header-right">MIQA</div>
+    </div>
+
+    <div class="section-number">RESULTADOS MEDIDOS EM IMAGENS REAIS</div>
+    <h2>Quantas vezes o MIQA acerta — e quantas erra.</h2>
+
+    <p class="lead">
+      O sistema foi testado em mais de <strong>22 mil imagens clínicas reais</strong> de três modalidades diferentes, usando bancos de imagem usados como padrão-ouro em pesquisa médica internacional. Abaixo, em termos simples: quantos casos em cada 100 o sistema acerta e quantos erra.
+    </p>
+
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th style="width:25%">MODALIDADE</th>
+          <th style="width:18%">Nº DE IMAGENS<br>TESTADAS</th>
+          <th style="width:18%">ACERTOS<br>EM CADA 100</th>
+          <th style="width:18%">ERROS<br>EM CADA 100</th>
+          <th>LEITURA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="modality">Raio-X de tórax</td>
+          <td>3&thinsp;176</td>
+          <td><span class="big-ok">97</span><div class="sub">em 100</div></td>
+          <td><span class="big-bad">3</span><div class="sub">em 100</div></td>
+          <td>Excelente. Dos 3 erros, a maioria é confusão sutil entre &quot;Normal&quot; e &quot;Opacidade leve&quot; &mdash; ambos passam para o radiologista sem atraso.</td>
+        </tr>
+        <tr>
+          <td class="modality">Ultrassom mamário</td>
+          <td>117</td>
+          <td><span class="big-ok">87</span><div class="sub">em 100</div></td>
+          <td><span class="big-bad">13</span><div class="sub">em 100</div></td>
+          <td>Ponto a melhorar: casos de &quot;maligno&quot; são a minoria do banco de treino. A próxima versão usará dados adicionais para reduzir esses 13 erros.</td>
+        </tr>
+        <tr>
+          <td class="modality">OCT / imagem anatômica</td>
+          <td>19&thinsp;000+</td>
+          <td><span class="big-ok">90</span><div class="sub">em 100</div></td>
+          <td><span class="big-bad">10</span><div class="sub">em 100</div></td>
+          <td>Bom em referência acadêmica. A próxima etapa é reforçar com imagens reais de OCT oftalmológica clínica.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>O que esses números significam, em dinheiro</h3>
+    <p>
+      Hoje, sem o MIQA, <strong>cerca de 20 em cada 100 imagens</strong> precisam ser refeitas em serviços sem controle ativo de qualidade &mdash; número estimado pela literatura internacional. Com o MIQA detectando problemas no momento da captura, a expectativa é <strong>reduzir repetições para menos de 5 em 100</strong>, ou seja, <strong>cortar 75 % das repetições</strong>.
+    </p>
+
+    <div class="kpi-hero">
+      <div class="kpi-hero-box">
+        <div class="kpi-hero-value">75%</div>
+        <div class="kpi-hero-label">de redução esperada no número de imagens refeitas</div>
+      </div>
+      <div class="kpi-hero-box">
+        <div class="kpi-hero-value">R$ 140&thinsp;mil</div>
+        <div class="kpi-hero-label">economia anual estimada por aparelho de imagem &mdash; cálculo direto baseado em volume típico e custo de repetição</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">TRANSPARÊNCIA</div>
+      <p>Os 13 erros em 100 no ultrassom mamário estão identificados, têm causa conhecida (poucas imagens de câncer no banco público) e plano concreto de correção. Nenhum número aqui está escondido.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 05 · ZERO INVASÃO ============ -->
+<div class="page">
+  <div class="inner-page">
+    <div class="page-header-rule">
+      <div class="page-header-left">05 &middot; Instalação</div>
+      <div class="page-header-right">MIQA</div>
+    </div>
+
+    <div class="section-number">ZERO INVASÃO NO FLUXO DO HOSPITAL</div>
+    <h2>Sem trocar aparelho. Sem mudar sistema. Sem treinar ninguém.</h2>
+
+    <p class="lead">
+      O MIQA foi desenhado para entrar lateralmente. O hospital continua operando como opera hoje. Nada do processo clínico é tocado &mdash; só recebemos uma <strong>cópia passiva</strong> da imagem para processar do lado de fora.
+    </p>
+
+    <div class="zi-diagram">
+      <div class="zi-box hospital">
+        <div class="zi-box-label">O QUE JÁ EXISTE</div>
+        <div class="zi-box-title">Hospital</div>
+        <div class="zi-box-desc">Aparelho de imagem + sistema PACS + fluxo do técnico + rotina do radiologista. <strong>Continua tudo exatamente igual.</strong></div>
+      </div>
+      <div class="zi-cable">
+        um<br>cabo<br>só
+      </div>
+      <div class="zi-box miqa">
+        <div class="zi-box-label">O QUE É ADICIONADO</div>
+        <div class="zi-box-title">MIQA</div>
+        <div class="zi-box-desc">Recebe cópia da imagem, processa em nuvem segura, devolve a nota para o técnico na mesma tela em que ele já trabalha.</div>
+      </div>
+    </div>
+
+    <h3>O que o hospital precisa fazer para ligar o MIQA</h3>
+    <ul class="simple">
+      <li>Autorizar a conexão de um cabo de rede entre o equipamento de imagem e o roteador do MIQA. <strong>Uma tarde de trabalho.</strong></li>
+      <li>Aprovar um termo simples que permite ao MIQA receber cópias das imagens, em conformidade com LGPD.</li>
+      <li>Apontar a tela (do próprio aparelho ou do desktop do técnico) onde a nota A / B / C deve aparecer.</li>
+      <li>Pronto. O técnico começa a receber as notas logo na primeira imagem capturada depois da instalação.</li>
+    </ul>
+
+    <h3>O que o hospital NÃO precisa fazer</h3>
+    <ul class="simple">
+      <li>Trocar aparelho. Não precisa.</li>
+      <li>Mudar o sistema PACS ou o prontuário eletrônico. Não precisa.</li>
+      <li>Alterar o fluxo clínico. Não precisa.</li>
+      <li>Treinar o técnico por horas. A nota é óbvia &mdash; 5 minutos de orientação basta.</li>
+      <li>Comprar servidor. Tudo roda na nuvem do MIQA, hospedada no Brasil.</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-label">PRINCÍPIO</div>
+      <p>MIQA é <strong>aditivo, nunca substitutivo</strong>. Se um dia o hospital decidir desligar, o fluxo volta exatamente ao que era antes. Nada fica amarrado.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 06 · QUEM COMPRA E POR QUANTO ============ -->
+<div class="page">
+  <div class="inner-page">
+    <div class="page-header-rule">
+      <div class="page-header-left">06 &middot; Modelo Comercial</div>
+      <div class="page-header-right">MIQA</div>
+    </div>
+
+    <div class="section-number">COMO SE CONTRATA</div>
+    <h2>Valor por aparelho conectado, por mês.</h2>
+
+    <p class="lead">
+      O MIQA é cobrado como serviço contínuo, com valor fixo por aparelho de imagem conectado ao sistema. Sem upfront de hardware. Sem taxa de implantação surpresa. Cancelamento em aviso de 30 dias.
+    </p>
+
+    <table class="results-table">
+      <thead>
+        <tr><th style="width:32%">CLIENTE</th><th style="width:26%">VALOR TÍPICO</th><th>QUEM PAGA</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="modality">Hospital privado médio<br><span class="sub">(3&ndash;8 aparelhos)</span></td>
+          <td><strong>R$ 4&thinsp;000 a R$ 9&thinsp;000 / mês</strong></td>
+          <td>Direção técnica / comitê de qualidade hospitalar &mdash; payback em menos de 3 meses.</td>
+        </tr>
+        <tr>
+          <td class="modality">Rede de clínicas de diagnóstico<br><span class="sub">(20+ aparelhos)</span></td>
+          <td><strong>Valor por volume</strong></td>
+          <td>CFO / diretor de operações &mdash; ganho em margem via redução de repetições e atrasos.</td>
+        </tr>
+        <tr>
+          <td class="modality">Operadora de saúde<br><span class="sub">(para prestadores)</span></td>
+          <td><strong>Modelo de compartilhamento<br>de economia gerada</strong></td>
+          <td>Diretor médico / gestão de sinistro &mdash; operadora oferece MIQA como benefício ao prestador e divide a economia.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Por que cada perfil compra</h3>
+    <ul class="simple">
+      <li><strong>Hospital privado:</strong> reduz custo de repetições, melhora NPS do paciente, reduz risco legal de laudo errado.</li>
+      <li><strong>Rede de diagnóstico:</strong> aumenta capacidade efetiva por aparelho (menos tempo perdido com repetições) + diferencial competitivo na venda.</li>
+      <li><strong>Operadora de saúde:</strong> diminui sinistro por procedimento repetido e por diagnóstico atrasado. Primeira operadora a adotar terá dado competitivo forte.</li>
+      <li><strong>Órgão regulador (ANVISA/CFM) e auditor externo:</strong> gera relatório de qualidade contínua auditável &mdash; prova que o hospital está monitorando o serviço prestado.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============ 07 · DECISÃO ============ -->
+<div class="page">
+  <div class="inner-page">
+    <div class="page-header-rule">
+      <div class="page-header-left">07 &middot; Decisão</div>
+      <div class="page-header-right">MIQA</div>
+    </div>
+
+    <div class="section-number">RESUMO EM TRÊS LINHAS</div>
+    <h2>O que o diretor precisa decidir.</h2>
+
+    <div class="callout" style="margin-top: 8px;">
+      <div class="callout-label">EM TRÊS LINHAS</div>
+      <p><strong>1.</strong> Existe uma dor clara: imagem ruim passa despercebida, paciente volta pra casa, hospital refaz depois com custo e atraso.</p>
+      <p style="margin-top:12px;"><strong>2.</strong> O MIQA resolve isso com uma camada de IA que dá uma nota A / B / C ao técnico, na hora, sem mexer em nada do fluxo atual &mdash; basta um cabo de rede.</p>
+      <p style="margin-top:12px;"><strong>3.</strong> Em testes controlados com imagens reais, acerta 87 a 97 em cada 100 casos, a depender da modalidade. Redução esperada de 75 % nas repetições &mdash; payback menor que 3 meses em hospital médio.</p>
+    </div>
+
+    <h3>O que precisa ser aprovado para começar</h3>
+    <ul class="simple">
+      <li>Autorização para apresentar o MIQA ao comitê técnico de um hospital parceiro (piloto de 3 meses, sem custo de entrada).</li>
+      <li>Aprovação do modelo comercial proposto (valor mensal por aparelho) para incluir no portfólio de vendas da WingsAI.</li>
+      <li>Alocação de um engenheiro para acompanhar a adaptação final a dados clínicos do piloto &mdash; 3 meses.</li>
+    </ul>
+
+    <h3>Se a decisão for SIM, o que acontece em 30 dias</h3>
+    <ul class="simple">
+      <li>Reunião técnica com o hospital parceiro marcada.</li>
+      <li>Termo de parceria assinado (modelo LGPD pronto).</li>
+      <li>Cabo conectado no primeiro aparelho de imagem do piloto.</li>
+      <li>Primeira nota A / B / C entregue ao técnico, em imagem real do hospital.</li>
+    </ul>
+
+    <div class="callout-highlight" style="margin-top: 32px;">
+      <p><strong>A pergunta final.</strong> Temos autorização para iniciar o piloto no primeiro hospital parceiro? <strong>Com um SIM hoje, a primeira reunião acontece nesta semana.</strong></p>
+    </div>
+
+    <div style="margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--gray-200); font-family: 'Source Sans 3', sans-serif; font-size: 12px; color: var(--gray-600); text-align: center; line-height: 1.7;">
+      Documento preparado pela liderança técnica MIQA &middot; WingsAI<br>
+      Para complementos técnicos, consultar: MIQA Status Executivo &mdash; detalhamento de arquitetura, benchmarks e reprodutibilidade.
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

@@ -63,3 +63,6 @@ secrets/
 .env
 .env.*
 config/config.yaml
+
+# Vercel CLI metadata (local only)
+apresentacao_executivo/.vercel/
