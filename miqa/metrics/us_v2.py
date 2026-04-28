@@ -89,21 +89,46 @@ def speckle_anisotropy(img: np.ndarray, size: int = 96) -> tuple[float, dict]:
     }
 
 
-def lateral_resolution_proxy(img: np.ndarray, size: int = 96) -> tuple[float, dict]:
-    """FWHM horizontal da auto-correlação em px — proxy de resolução lateral.
-    Menor = mais resolução (PSF mais estreita)."""
+def lateral_resolution_proxy(img: np.ndarray, size: int = 192) -> tuple[float, dict]:
+    """FWHM horizontal sub-pixel da auto-correlação — proxy de resolução lateral.
+    Menor = mais resolução (PSF mais estreita).
+
+    Mudanças vs v1: ROI 192 (vs 96) e interpolação linear pra FWHM sub-pixel.
+    Flag 'saturated=True' quando autocorrelação não cai abaixo de 0.5 dentro
+    da meia-largura disponível (raro; significa decorrelação lentíssima).
+    """
     img = _check(img)
-    roi = _find_speckle_roi(img, size=size)
+    # tenta size=192, depois 128, depois 96 conforme tamanho da imagem
+    for try_size in (size, 128, 96):
+        roi = _find_speckle_roi(img, size=try_size)
+        if roi is not None:
+            size = try_size
+            break
     if roi is None:
         return float("nan"), {"reason": "sem ROI speckle"}
     y, x = roi
     p = img[y:y+size, x:x+size]
     A = _autocorr2d(p)
     cy, cx = size // 2, size // 2
-    h_line = A[cy, cx:]
-    below = np.where(h_line < 0.5)[0]
-    fwhm = int(below[0]) if len(below) else len(h_line)
-    return float(fwhm), {"roi_xy": (int(x), int(y))}
+    h_line = A[cy, cx:]   # linha de autocorrelação para a direita
+    half = 0.5
+    saturated = False
+    below_idx = np.where(h_line < half)[0]
+    if len(below_idx) == 0:
+        # autocorrelação não cai abaixo de 0.5: PSF mais larga que a meia-ROI
+        return float(len(h_line)), {"roi_xy": (int(x), int(y)), "size": size,
+                                     "saturated": True}
+    i = int(below_idx[0])
+    if i == 0:
+        fwhm = 0.0
+    else:
+        # interp linear entre h_line[i-1] (>=0.5) e h_line[i] (<0.5)
+        v0, v1 = h_line[i-1], h_line[i]
+        denom = (v0 - v1) if (v0 - v1) > 1e-9 else 1e-9
+        frac = (v0 - half) / denom
+        fwhm = (i - 1) + frac
+    return float(fwhm), {"roi_xy": (int(x), int(y)), "size": size,
+                          "saturated": False, "fwhm_frac_size": fwhm / (size / 2)}
 
 
 def tgc_consistency(img: np.ndarray) -> tuple[float, dict]:

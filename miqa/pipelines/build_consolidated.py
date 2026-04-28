@@ -209,8 +209,15 @@ def overview() -> str:
 </table>"""
 
 
+def degradation_section() -> str:
+    """Embute o snippet gerado por build_degradation_section.py se existir."""
+    f = RESULTS / "_degradation_section.html"
+    return f.read_text() if f.exists() else ""
+
+
 def main():
     sections = [section_modality(m) for m in ("rx", "us", "ct")]
+    sections.append(degradation_section())
     html = f"""<!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <title>MIQA — Experimentos (consolidado)</title>
