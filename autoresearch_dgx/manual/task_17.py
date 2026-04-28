@@ -20,7 +20,7 @@ for name in ["chestmnist", "breastmnist", "organamnist"]:
     feats_all, labs_all = [], []
     for split in ["train", "val", "test"]:
         ds, info = get_dataset(name, split=split, size=28)
-        dl = DataLoader(ds, batch_size=256, shuffle=False, num_workers=2, pin_memory=True)
+        dl = DataLoader(ds, batch_size=256, shuffle=False, num_workers=0, pin_memory=True)
         with torch.no_grad():
             for x, y in dl:
                 x = x.to(DEVICE)

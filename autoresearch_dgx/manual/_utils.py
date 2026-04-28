@@ -16,11 +16,17 @@ from medmnist import INFO, ChestMNIST, BreastMNIST, OrganAMNIST
 SEED = 42
 EXP_DIR = os.environ.get(
     "MIQA_EXP_DIR",
-    "/home/oftalmousp/jv-teste/miqa_backend/autoresearch/gemma4_experiments",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "results_local"),
 )
+EXP_DIR = os.path.abspath(EXP_DIR)
 os.makedirs(EXP_DIR, exist_ok=True)
 
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+if torch.cuda.is_available():
+    DEVICE = torch.device("cuda")
+elif getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
+    DEVICE = torch.device("mps")
+else:
+    DEVICE = torch.device("cpu")
 
 DATASET_CLASSES = {
     "chestmnist": ChestMNIST,
@@ -106,8 +112,8 @@ def train_one_epoch(model, loader, optimizer, loss_fn, task: str):
     model.train()
     total, running = 0, 0.0
     for x, y in loader:
-        x = x.to(DEVICE, non_blocking=True)
-        y_t = label_to_tensor(y, task).to(DEVICE, non_blocking=True)
+        x = x.to(DEVICE, non_blocking=(DEVICE.type == "cuda"))
+        y_t = label_to_tensor(y, task).to(DEVICE, non_blocking=(DEVICE.type == "cuda"))
         logits = model(x)
         if task == "multi-label, binary-class":
             loss = loss_fn(logits, y_t)
@@ -203,6 +209,9 @@ def count_params(m: nn.Module) -> int:
 
 def quick_loaders(name: str, batch: int = 128, size: int = 28, augment: bool = False,
                   workers: int = 2):
+    # macOS spawn-start + scripts sem `if __name__=="__main__"` quebram com workers>0.
+    # MIQA_NUM_WORKERS=0 (default no runner local) força single-process loading.
+    workers = int(os.environ.get("MIQA_NUM_WORKERS", workers))
     train_ds, info = get_dataset(name, "train", size=size, augment=augment)
     val_ds, _ = get_dataset(name, "val", size=size)
     test_ds, _ = get_dataset(name, "test", size=size)

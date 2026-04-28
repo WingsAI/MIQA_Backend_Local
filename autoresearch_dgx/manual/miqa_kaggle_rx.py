@@ -63,7 +63,7 @@ def train_one_epoch(model, dl, opt, loss_fn):
     model.train()
     tl = 0; n = 0
     for x, y in dl:
-        x = x.to(DEVICE, non_blocking=True); y = y.to(DEVICE)
+        x = x.to(DEVICE); y = y.to(DEVICE)
         logits = model(x)
         loss = loss_fn(logits, y)
         opt.zero_grad(); loss.backward(); opt.step()

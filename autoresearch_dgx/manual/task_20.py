@@ -47,7 +47,7 @@ for in_name in DATASETS:
         if out_name == in_name:
             continue
         out_ds, _ = get_dataset(out_name, split="test", size=28)
-        out_dl = DataLoader(out_ds, batch_size=128, shuffle=False, num_workers=2)
+        out_dl = DataLoader(out_ds, batch_size=128, shuffle=False, num_workers=0)
         s_out = msp_scores(out_dl, multilabel)
 
         # in-dist deve ter score ALTO (confident), OOD deve ter BAIXO
