@@ -33,6 +33,7 @@ PLOT_METRICS = {
            ("rx_v2.lung_snr", "lung_SNR"),
            ("rx_v2.nps_high_frac", "NPS hi"),
            ("u.laplacian_var", "lap_var"),
+           ("u.laplacian_snr", "lap_snr"),
            ("u.entropy", "entropy"),
            ("v2.niqe", "NIQE"),
            ("v2.brisque", "BRISQUE")],
@@ -42,6 +43,7 @@ PLOT_METRICS = {
            ("us_v2.speckle_anisotropy", "anisotropy"),
            ("us_v2.tgc_cov", "tgc_cov"),
            ("u.laplacian_var", "lap_var"),
+           ("u.laplacian_snr", "lap_snr"),
            ("u.entropy", "entropy"),
            ("v2.niqe", "NIQE"),
            ("v2.brisque", "BRISQUE")],
@@ -50,9 +52,19 @@ PLOT_METRICS = {
            ("ct.ring", "ring"),
            ("ct.streak", "streak"),
            ("u.laplacian_var", "lap_var"),
+           ("u.laplacian_snr", "lap_snr"),
            ("u.entropy", "entropy"),
            ("v2.niqe", "NIQE"),
            ("v2.brisque", "BRISQUE")],
+    "mri": [("mri.nema_snr", "NEMA_SNR"),
+            ("mri.ghosting", "ghosting"),
+            ("mri.bias_field", "bias"),
+            ("mri.motion_hf", "motion_HF"),
+            ("u.laplacian_var", "lap_var"),
+            ("u.laplacian_snr", "lap_snr"),
+            ("u.entropy", "entropy"),
+            ("v2.niqe", "NIQE"),
+            ("v2.brisque", "BRISQUE")],
 }
 
 
@@ -141,7 +153,7 @@ def main():
     print(f"Grid carregado: {len(df)} linhas")
 
     sections = []
-    for mod in ("rx", "us", "ct"):
+    for mod in ("rx", "us", "ct", "mri"):
         plot = dose_response_grid(df, mod)
         if plot:
             sections.append(f"""

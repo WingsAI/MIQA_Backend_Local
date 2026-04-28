@@ -18,13 +18,15 @@ from miqa.metrics.universal_v2 import niqe, brisque
 from miqa.pipelines.run_rx import load_rx
 from miqa.pipelines.run_us import load_us
 from miqa.pipelines.run_ct import load_ct
+from miqa.pipelines.run_mri import load_mri
 
 ROOT = Path(__file__).parent.parent
 
 LOADERS = {
-    "rx": (load_rx, ROOT / "data" / "rx_subset", "*"),
-    "us": (load_us, ROOT / "data" / "us_subset", "*"),
-    "ct": (load_ct, ROOT / "data" / "ct_subset", "*.dcm"),
+    "rx":  (load_rx,  ROOT / "data" / "rx_subset",  "*"),
+    "us":  (load_us,  ROOT / "data" / "us_subset",  "*"),
+    "ct":  (load_ct,  ROOT / "data" / "ct_subset",  "*.dcm"),
+    "mri": (load_mri, ROOT / "data" / "mri_subset", "*.dcm"),
 }
 
 
@@ -44,10 +46,10 @@ def get_norm(modality: str, path: Path) -> np.ndarray:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--modality", choices=["rx", "us", "ct", "all"], default="all")
+    ap.add_argument("--modality", choices=["rx", "us", "ct", "mri", "all"], default="all")
     args = ap.parse_args()
 
-    mods = ["rx", "us", "ct"] if args.modality == "all" else [args.modality]
+    mods = ["rx", "us", "ct", "mri"] if args.modality == "all" else [args.modality]
     rows = []
     for mod in mods:
         loader, subset_dir, pattern = LOADERS[mod]

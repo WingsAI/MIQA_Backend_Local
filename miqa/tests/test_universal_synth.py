@@ -8,7 +8,7 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from miqa.metrics.universal import (
-    laplacian_var, tenengrad, shannon_entropy, rms_contrast,
+    laplacian_var, laplacian_snr, tenengrad, shannon_entropy, rms_contrast,
     clipping_pct, dynamic_range_usage,
 )
 from miqa.synthetic.degradations import (
@@ -42,6 +42,22 @@ def main():
         msg = f"base={base:.2f} blur={blur:.2f} ratio={blur/base:.3f}"
         if check(name, ok, msg): n_pass += 1
         else: n_fail += 1
+
+    print("\n=== laplacian_snr: deve CAIR com blur (estrutura), MAS estável sob ruído puro ===")
+    base_lsnr = _v(laplacian_snr, img)
+    blur_lsnr = _v(laplacian_snr, add_gaussian_blur(img, sigma=3))
+    noisy_lsnr = _v(laplacian_snr, add_gaussian_noise(img, std=0.05))
+    cond_blur = blur_lsnr < 0.5 * base_lsnr
+    # ruído alto deve cair pouco (vs lap_var bruto que escalaria com σ²)
+    cond_noise = abs(noisy_lsnr / base_lsnr - 1) < 1.5  # tolera fator 2.5x mas não 100x
+    if check("laplacian_snr_blur", cond_blur,
+             f"base={base_lsnr:.0f} blur={blur_lsnr:.0f} ratio={blur_lsnr/base_lsnr:.3f}"):
+        n_pass += 1
+    else: n_fail += 1
+    if check("laplacian_snr_robust_to_noise", cond_noise,
+             f"base={base_lsnr:.0f} noisy={noisy_lsnr:.0f} ratio={noisy_lsnr/base_lsnr:.3f} (deve ficar perto de 1)"):
+        n_pass += 1
+    else: n_fail += 1
 
     print("\n=== contraste (deve CAIR ao comprimir intensidade) ===")
     base_c = _v(rms_contrast, img)

@@ -28,6 +28,24 @@ def laplacian_var(img: np.ndarray) -> tuple[float, dict]:
     return float(lap.var()), {"unit": "var(Lap[0..255])"}
 
 
+def laplacian_snr(img: np.ndarray) -> tuple[float, dict]:
+    """Razão estrutura/ruído robusta: percentil 95 de |Lap| / MAD de |Lap|.
+
+    - p95 de |Lap| reflete picos de gradiente (bordas reais — *estrutura*).
+    - MAD de |Lap| é dominado pelo "fundo" de Laplaciano (ruído).
+    - Razão alta = estrutura nítida sobre fundo pouco ruidoso.
+    - Robusta a fator multiplicativo no ruído (denominador escala junto).
+    """
+    img = _check(img)
+    lap = cv2.Laplacian((img * 255).astype(np.uint8), cv2.CV_64F)
+    a = np.abs(lap)
+    p95 = float(np.percentile(a, 95))
+    med = float(np.median(a))
+    mad = float(np.median(np.abs(a - med)))
+    denom = max(mad * 1.4826, 1e-6)  # 1.4826: MAD → σ-equivalente
+    return p95 / denom, {"p95_abs_lap": p95, "mad_abs_lap": mad}
+
+
 def shannon_entropy(img: np.ndarray, bins: int = 256) -> tuple[float, dict]:
     """Entropia de Shannon do histograma. Mais alta = mais informação/contraste.
     Imagem uniforme → ~0; ruído branco → log2(bins)."""
@@ -72,6 +90,7 @@ def tenengrad(img: np.ndarray) -> tuple[float, dict]:
 
 ALL_METRICS = {
     "laplacian_var": laplacian_var,
+    "laplacian_snr": laplacian_snr,
     "tenengrad": tenengrad,
     "entropy": shannon_entropy,
     "rms_contrast": rms_contrast,

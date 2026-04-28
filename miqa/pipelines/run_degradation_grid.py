@@ -26,6 +26,8 @@ from miqa.metrics.us_v2 import run_all_us_v2
 from miqa.pipelines.run_rx import load_rx
 from miqa.pipelines.run_us import load_us
 from miqa.pipelines.run_ct import load_ct
+from miqa.pipelines.run_mri import load_mri
+from miqa.metrics.mri import run_all_mri
 
 ROOT = Path(__file__).parent.parent
 RESULTS = ROOT / "results"
@@ -39,6 +41,8 @@ def get_image(modality: str, path: Path) -> np.ndarray:
         img, _ = load_us(path)
     elif modality == "ct":
         _, img, _ = load_ct(path)  # versão janelada
+    elif modality == "mri":
+        img, _ = load_mri(path)
     else:
         raise ValueError(modality)
     return img.astype(np.float32)
@@ -63,6 +67,9 @@ def compute_all_metrics(img: np.ndarray, modality: str) -> dict:
             out[f"us.{k}"] = v["value"]
         for k, v in run_all_us_v2(img).items():
             out[f"us_v2.{k}"] = v["value"]
+    elif modality == "mri":
+        for k, v in run_all_mri(img).items():
+            out[f"mri.{k}"] = v["value"]
     out["v2.niqe"] = niqe(img)[0]
     out["v2.brisque"] = brisque(img)[0]
     return out
@@ -78,7 +85,7 @@ def main():
     long_rows = []
     t0 = time.time()
 
-    for modality in ("rx", "us", "ct"):
+    for modality in ("rx", "us", "ct", "mri"):
         subset = ROOT / "data" / f"{modality}_subset"
         files = [f for f in sorted(subset.glob("*"))
                  if f.is_file() and not f.name.startswith("._")]

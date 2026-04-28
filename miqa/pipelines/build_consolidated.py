@@ -32,12 +32,16 @@ V1_COLS = {
     "ct": [("ct.air_noise.value", "σ ar (HU)"), ("ct.hu_calibration.value", "Δ HU calib"),
            ("ct.ring.value", "Ring residual"), ("ct.streak.value", "Streak"),
            ("u.entropy.value", "Entropy")],
+    "mri": [("mri.nema_snr.value", "NEMA SNR"), ("mri.ghosting.value", "Ghosting"),
+            ("mri.bias_field.value", "Bias field"), ("mri.motion_hf.value", "Motion HF"),
+            ("u.entropy.value", "Entropy"), ("u.dynamic_range.value", "Dyn range")],
 }
 
 DATASET_INFO = {
     "rx": ("Kermany pediatric pneumonia (paultimothymooney)", "Kaggle • JPEG"),
     "us": ("BUSI breast ultrasound (sabahesaraki)", "Kaggle • PNG"),
     "ct": ("Stroke head DICOM (orvile/inme-veri-seti)", "Kaggle • DICOM HU"),
+    "mri": ("Brain MRI dataset (simongraves/brain-mri-dataset)", "Kaggle • DICOM"),
 }
 
 
@@ -72,7 +76,7 @@ def histograms_section(df: pd.DataFrame, modality: str) -> str:
     cols = V1_COLS[modality]
     n = len(cols)
     fig, axes = plt.subplots(2, 3, figsize=(11, 6), dpi=110)
-    color = {"rx": "#3a7", "us": "#37a", "ct": "#a73"}[modality]
+    color = {"rx": "#3a7", "us": "#37a", "ct": "#a73", "mri": "#a37"}[modality]
     for ax, (c, label) in zip(axes.flat, cols):
         if c not in df.columns:
             ax.set_visible(False); continue
@@ -189,7 +193,7 @@ tgc_cov mediana <b>{t.median():.3f}</b> (CoV de μ por linha; baixo = TGC bem aj
 
 def overview() -> str:
     counts = {}
-    for m in ("rx", "us", "ct"):
+    for m in ("rx", "us", "ct", "mri"):
         df = load_v1(m)
         counts[m] = len(df) if df is not None else 0
     v2 = load_v2()
@@ -205,6 +209,9 @@ def overview() -> str:
     <td>{'✓' if v2 is not None else '—'}</td>
     <td>{'speckle_anisotropy · lateral_res · TGC' if usv2 is not None else '—'}</td></tr>
 <tr><td>CT</td><td>{counts['ct']}</td><td>air_noise · HU calib · ring · streak</td>
+    <td>{'✓' if v2 is not None else '—'}</td>
+    <td>slice_consistency (volumes)</td></tr>
+<tr><td>MRI</td><td>{counts['mri']}</td><td>NEMA SNR · ghosting · bias field · motion HF</td>
     <td>{'✓' if v2 is not None else '—'}</td><td>—</td></tr>
 </table>"""
 
@@ -219,10 +226,16 @@ def scorecard_section() -> str:
     return f.read_text() if f.exists() else ""
 
 
+def unified_section() -> str:
+    f = RESULTS / "_unified_section.html"
+    return f.read_text() if f.exists() else ""
+
+
 def main():
-    sections = [section_modality(m) for m in ("rx", "us", "ct")]
+    sections = [section_modality(m) for m in ("rx", "us", "ct", "mri")]
     sections.append(degradation_section())
     sections.append(scorecard_section())
+    sections.append(unified_section())
     html = f"""<!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <title>MIQA — Experimentos (consolidado)</title>
