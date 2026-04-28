@@ -56,6 +56,11 @@ def load_rx_v2() -> pd.DataFrame | None:
     return pd.read_csv(f) if f.exists() else None
 
 
+def load_us_v2() -> pd.DataFrame | None:
+    f = RESULTS / "us_v2_metrics.csv"
+    return pd.read_csv(f) if f.exists() else None
+
+
 def fig_b64(fig) -> str:
     buf = io.BytesIO()
     fig.savefig(buf, format="png", bbox_inches="tight")
@@ -92,7 +97,10 @@ def stats_table(df: pd.DataFrame, modality: str) -> str:
 
 def corr_heatmap(df: pd.DataFrame, modality: str) -> str | None:
     cols_full = [(c, name) for c, name in V1_COLS[modality] if c in df.columns]
-    extra_cols = [(c, c) for c in ("niqe", "brisque", "v2.lung_snr.value", "v2.nps_high_frac.value")
+    extra_cols = [(c, c) for c in ("niqe", "brisque",
+                                   "v2.lung_snr.value", "v2.nps_high_frac.value",
+                                   "v2.speckle_anisotropy.value",
+                                   "v2.lateral_resolution_px.value", "v2.tgc_cov.value")
                   if c in df.columns]
     pairs = cols_full + extra_cols
     if len(pairs) < 3:
@@ -131,6 +139,10 @@ def section_modality(modality: str) -> str:
         rx_v2 = load_rx_v2()
         if rx_v2 is not None:
             df = df.merge(rx_v2, on="file", how="left")
+    if modality == "us":
+        us_v2 = load_us_v2()
+        if us_v2 is not None:
+            df = df.merge(us_v2, on="file", how="left")
 
     name, fmt = DATASET_INFO[modality]
     n = len(df)
@@ -153,6 +165,15 @@ BRISQUE mediana <b>{df['brisque'].median():.2f}</b></p>"""
 <h3>Métricas RX v2 (NPS, lung_snr)</h3>
 <p>lung_snr mediana <b>{s.median():.2f}</b> ({len(s)}/{n} válidas)<br>
 nps_high_frac mediana <b>{df['v2.nps_high_frac.value'].median():.3f}</b></p>"""
+    if modality == "us" and "v2.speckle_anisotropy.value" in df.columns:
+        a = df["v2.speckle_anisotropy.value"].dropna()
+        l = df["v2.lateral_resolution_px.value"].dropna()
+        t = df["v2.tgc_cov.value"].dropna()
+        extra_v2_summary += f"""
+<h3>Métricas US v2 (speckle anisotropy, lateral resolution, TGC)</h3>
+<p>speckle_anisotropy mediana <b>{a.median():.2f}</b> (1.0 = isotrópico ideal)<br>
+lateral_resolution_px mediana <b>{l.median():.0f}</b> px (FWHM autocorrelação horizontal)<br>
+tgc_cov mediana <b>{t.median():.3f}</b> (CoV de μ por linha; baixo = TGC bem ajustado)</p>"""
 
     return f"""
 <h2>{modality.upper()}</h2>
@@ -173,6 +194,7 @@ def overview() -> str:
         counts[m] = len(df) if df is not None else 0
     v2 = load_v2()
     rxv2 = load_rx_v2()
+    usv2 = load_us_v2()
     return f"""
 <table class="overview">
 <tr><th>Modalidade</th><th>n imgs</th><th>Métricas v1</th><th>v2 (NIQE/BRISQUE)</th><th>v2 modalidade</th></tr>
@@ -180,7 +202,8 @@ def overview() -> str:
     <td>{'✓' if v2 is not None else '—'}</td>
     <td>{'lung_snr · NPS' if rxv2 is not None else '—'}</td></tr>
 <tr><td>US</td><td>{counts['us']}</td><td>speckle_snr · shadowing · DoP · gain</td>
-    <td>{'✓' if v2 is not None else '—'}</td><td>—</td></tr>
+    <td>{'✓' if v2 is not None else '—'}</td>
+    <td>{'speckle_anisotropy · lateral_res · TGC' if usv2 is not None else '—'}</td></tr>
 <tr><td>CT</td><td>{counts['ct']}</td><td>air_noise · HU calib · ring · streak</td>
     <td>{'✓' if v2 is not None else '—'}</td><td>—</td></tr>
 </table>"""
