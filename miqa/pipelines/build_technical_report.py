@@ -731,6 +731,58 @@ def main():
   </div>
 </div>
 
+<!-- ===== PARTE 5 ===== -->
+<div class="page inner-page">
+  <div class="page-header-rule">
+    <div class="page-header-left">Parte 5 · Modelos ML Lightweight</div>
+    <div class="page-header-right">{today}</div>
+  </div>
+
+  <div class="section-eyebrow">CPU-Only · Sem Redes Neurais</div>
+  <h2>4 modelos treinados em datasets reais do Kaggle.</h2>
+
+  <p class="lead">REGRA DO PROJETO: nenhuma rede neural. Apenas modelos leves em CPU (Random Forest, XGBoost, Ridge). Inferência &lt; 50ms por imagem. Sem dependência de GPU. Modelos são pré-carregados no startup para evitar cold start.</p>
+
+  <h3>Arquitetura Teacher-Student</h3>
+  <div class="insight-box">
+    <div class="ttl">Teacher — Métricas Físicas</div>
+    As 21 métricas anatomy-aware + NIQE + BRISQUE geram um score unificado de 0-100. Este é o "professor" que ensina o modelo ML.
+  </div>
+  <div class="insight-box">
+    <div class="ttl">Student — Random Forest</div>
+    100 estimadores, max_depth=10. Input: features físicas extraídas da imagem. Output: score de qualidade [0, 100]. Treinamento em &lt; 2 minutos em CPU.
+  </div>
+  <div class="insight-box">
+    <div class="ttl">Data Augmentation — Degradações Controladas</div>
+    Cada imagem do dataset gera 2 variações sintéticas: blur gaussiano, ruído gaussiano, compressão JPEG ou redução de contraste. Isso multiplica o dataset e ensina o modelo a reconhecer qualidade degradada.
+  </div>
+
+  <h3>Resultados dos Treinamentos</h3>
+  <table class="tbl">
+    <tr><th>Modalidade</th><th>Parte</th><th>Dataset (Kaggle)</th><th>Imagens</th><th>Val MAE</th><th>Val R²</th><th>Status</th></tr>
+    <tr><td>RX</td><td>Tórax</td><td>COVID-19 Radiography</td><td class="num">21,000</td><td class="num">6.12</td><td class="num">0.861</td><td style="color:var(--success)">✓ Treinado</td></tr>
+    <tr><td>US</td><td>Mama</td><td>BUSI</td><td class="num">780</td><td class="num">0.20</td><td class="num">0.999</td><td style="color:var(--success)">✓ Treinado</td></tr>
+    <tr><td>CT</td><td>Tórax</td><td>COVID CT Scans</td><td class="num">2,000</td><td class="num">0.61</td><td class="num">0.962</td><td style="color:var(--success)">✓ Treinado</td></tr>
+    <tr><td>MRI</td><td>Cérebro</td><td>Brain Tumor MRI</td><td class="num">3,000</td><td class="num">1.77</td><td class="num">0.843</td><td style="color:var(--success)">✓ Treinado</td></tr>
+  </table>
+
+  <h3>Feature Importance</h3>
+  <p>Os modelos aprenderam que <b>BRISQUE</b> e <b>NIQE</b> são as features mais preditivas (juntas respondem por 60-95% da importância), seguidas por entropia da imagem e desvio padrão. As métricas anatomy-aware contribuem com 5-15% adicional, especialmente em contextos específicos (ex: <code>lung_symmetry</code> em RX tórax).</p>
+
+  <h3>Deploy e Railway</h3>
+  <p><b>Arquitetura:</b> O projeto é dividido em dois repositórios:</p>
+  <ul class="bullet">
+    <li><b>Frontend:</b> <code>fadex_medicina_projeto1</code> (Vue/React) — deploy no Railway em <code>miqafront-production.up.railway.app</code></li>
+    <li><b>Backend:</b> <code>MIQA_Backend_Local</code> (Python) — processamento de imagens, métricas físicas e modelos ML</li>
+  </ul>
+  <p><b>Modelos no Railway:</b> Os checkpoints <code>.pkl</code> (~5-20MB cada) são armazenados via Railway Volume ou upload manual. Não são commitados no GitHub por serem binários grandes. O backend carrega todos os modelos no startup (preload) para evitar cold start no primeiro request.</p>
+
+  <div class="insight-box">
+    <div class="ttl">Próximo Passo</div>
+    Expandir para 8+ contextos anatômicos (RX crânio/extremidade, CT abdome, MRI joelho) usando os datasets já baixados. Cada novo modelo treina em &lt; 3 minutos em CPU.
+  </div>
+</div>
+
 </div>
 </body>
 </html>"""
