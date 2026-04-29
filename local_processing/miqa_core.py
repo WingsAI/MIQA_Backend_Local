@@ -1,8 +1,7 @@
 import numpy as np
 from typing import Dict, Any, Union
-import joblib
-import pandas as pd
 import os
+
 from .heuristics.mri import MRIMetrics
 from .heuristics.ct import CTMetrics
 from .heuristics.us import USMetrics
@@ -11,17 +10,43 @@ from .preprocessing.artifact_removal import ArtifactRemover
 class MIQAAnalyzer:
     """
     Medical Image Quality Assessment (MIQA) Core Analyzer.
+    
+    REGRA: Apenas modelos lightweight em CPU (Random Forest, XGBoost).
+    Nenhuma rede neural. Modelos são carregados com antecedência para evitar cold start.
     """
 
-    def __init__(self, model_path: str = "miqa_rf_model.pkl"):
+    def __init__(self, model_path: str = None):
         self.artifact_remover = ArtifactRemover()
-        self.model = None
-        if os.path.exists(model_path):
-            try:
-                self.model = joblib.load(model_path)
-                print(f"MIQA: Loaded Random Forest model from {model_path}")
-            except Exception as e:
-                print(f"MIQA: Failed to load model: {e}")
+        self.models = {}  # Cache de modelos por (modality, body_part)
+        
+        # Pré-carrega modelos disponíveis
+        self._preload_models()
+
+    def _preload_models(self):
+        """Carrega todos os modelos disponíveis no startup para evitar cold start."""
+        try:
+            from miqa.ml_models import list_available_models, load_model
+            available = list_available_models()
+            
+            for modality, body_parts in available.items():
+                for body_part, models in body_parts.items():
+                    for model_info in models:
+                        model_type = model_info["name"]
+                        key = (modality, body_part)
+                        
+                        # Carrega modelo
+                        data = load_model(modality, body_part, model_type)
+                        if data:
+                            self.models[key] = data
+                            print(f"MIQA: Pre-loaded {modality}/{body_part}/{model_type}")
+            
+            if not self.models:
+                print("MIQA: Nenhum modelo treinado encontrado. Usando fallback heurístico.")
+            else:
+                print(f"MIQA: {len(self.models)} modelos carregados")
+        except Exception as e:
+            print(f"MIQA: Erro carregando modelos: {e}")
+            self.models = {}
 
     def analyze(self, image: np.ndarray, modality: str, metadata: Dict[str, Any] = None) -> Dict[str, Any]:
         """
@@ -33,13 +58,9 @@ class MIQAAnalyzer:
             metadata: DICOM metadata (PixelSpacing, etc).
         
         Returns:
-            Dictionary containing extracted features and (optionally) quality score.
+            Dictionary containing extracted features and quality score.
         """
         # 1. Sanitize Image
-        # clean_image, mask = self.artifact_remover.sanitization_pipeline(image)
-        # For metric calculation, we might want to use the clean image for texture,
-        # but keep awareness of artifacts. 
-        # For now, let's calculate metrics on the "clean" image to avoid text skewing results.
         clean_image, artifact_mask = self.artifact_remover.sanitization_pipeline(image)
         
         features = {}
@@ -57,57 +78,74 @@ class MIQAAnalyzer:
         # Add common artifact metrics
         features['artifact_area_ratio'] = np.sum(artifact_mask > 0) / image.size
         
-        # 3. Predict Score
-        if self.model:
-            # Prepare dataframe for prediction (ensure column order matches training?)
-            # RF is sensitive to column order if using array, but DF handles names.
-            # Assuming training used the same keys.
-            try:
-                # Convert features to DF
-                df_feat = pd.DataFrame([features])
-                # Fill NAs
-                df_feat = df_feat.fillna(0)
-                
-                # Check for missing columns that model expects?
-                # For now rely on sklearn to complain or just work if features match
-                predicted_score = self.model.predict(df_feat)[0]
-                # Clamp
-                score = max(0.0, min(predicted_score, 100.0))
-            except Exception as e:
-                print(f"Prediction failed: {e}, using fallback")
-                score = self._heuristic_fallback_score(features, modality)
-        else:
-            score = self._heuristic_fallback_score(features, modality)
+        # 3. Predict Score using lightweight model
+        body_part = self._detect_body_part(image, modality, metadata)
+        score = self._predict_with_model(features, modality, body_part)
         
         return {
             "score": score,
             "features": features,
             "modality": modality,
+            "body_part": body_part,
             "status": "success"
         }
+
+    def _detect_body_part(self, image: np.ndarray, modality: str, metadata: Dict) -> str:
+        """Detecta parte do corpo a partir de metadados ou heurísticas."""
+        if metadata and "BodyPartExamined" in metadata:
+            return metadata["BodyPartExamined"].lower()
+        
+        # Fallback simples por modalidade
+        defaults = {
+            "mri": "brain",
+            "ct": "chest",
+            "us": "abdomen"
+        }
+        return defaults.get(modality.lower(), "unknown")
+
+    def _predict_with_model(self, features: Dict[str, float], modality: str, body_part: str) -> float:
+        """Prediz score usando modelo lightweight ou fallback."""
+        key = (modality.lower(), body_part.lower())
+        
+        # Tenta usar modelo treinado
+        if key in self.models:
+            try:
+                model_data = self.models[key]
+                model = model_data["model"]
+                feature_names = model_data["feature_names"]
+                
+                # Prepara features
+                import pandas as pd
+                X = pd.DataFrame([features])
+                
+                # Garante colunas corretas
+                for col in feature_names:
+                    if col not in X.columns:
+                        X[col] = 0.0
+                X = X[feature_names]
+                
+                # Prediz
+                score = model.predict(X)[0]
+                return float(np.clip(score, 0, 100))
+            except Exception as e:
+                print(f"Prediction failed: {e}, using fallback")
+                return self._heuristic_fallback_score(features, modality)
+        
+        # Fallback heurístico
+        return self._heuristic_fallback_score(features, modality)
 
     def _extract_mri_features(self, image: np.ndarray, metadata: Dict) -> Dict[str, float]:
         """Extracts MRI-specific physics heuristics."""
         feats = {}
         
-        # Heuristics require some segmentation (Air vs Tissue). 
-        # Simple thresholding for prototype.
         threshold = np.mean(image) * 0.5
         background_mask = image < threshold
         tissue_mask = image >= threshold
         
-        # Dietrich SNR
         feats['snr_dietrich'] = MRIMetrics.calculate_dietrich_snr(image[tissue_mask], image[background_mask])
-        
-        # EFC
         feats['efc'] = MRIMetrics.calculate_efc(image)
-        
-        # Ghosting (simplified)
         feats['ghosting_ratio'] = MRIMetrics.calculate_ghosting_ratio(image, background_mask=background_mask)
-        
-        # CJV (Needs GM/WM segmentation - placeholder)
-        # We would need multi-otsu or k-means here to find GM/WM.
-        feats['cjv_proxy'] = 0.0 # To be implemented with segmentation logic
+        feats['cjv_proxy'] = 0.0
         
         return feats
 
@@ -115,16 +153,9 @@ class MIQAAnalyzer:
         """Extracts CT-specific physics heuristics."""
         feats = {}
         
-        # Air Deviation
         feats['air_deviation'] = CTMetrics.calculate_air_deviation(image)
-        
-        # Quantum Mottle
         feats['quantum_mottle'] = CTMetrics.calculate_quantum_mottle(image)
-        
-        # ERD
         feats['erd'] = CTMetrics.calculate_erd(image)
-        
-        # NPS
         feats['nps_score'] = CTMetrics.calculate_nps_proxy(image)
         
         return feats
@@ -133,32 +164,25 @@ class MIQAAnalyzer:
         """Extracts US-specific physics heuristics."""
         feats = {}
         
-        # Speckle Index
         feats['speckle_index'] = USMetrics.calculate_speckle_index(image)
-        
-        # Shadowing
         feats['shadowing_score'] = USMetrics.detect_shadowing_dropout(image)
-        
-        # Depth Gradient
         feats['depth_gradient'] = USMetrics.calculate_depth_gradient(image)
         
         return feats
 
     def _heuristic_fallback_score(self, features: Dict[str, float], modality: str) -> float:
         """
-        Temporary linear combination of features to generate a dummy score 
-        before the Random Forest is trained.
+        Fallback heurístico quando não há modelo treinado.
         """
-        score = 50.0 # Base
+        score = 50.0
         
-        # Very rough logic just to see numbers move
         if modality == 'mri':
             if features.get('snr_dietrich', 0) > 10: score += 10
             if features.get('ghosting_ratio', 1) < 1.1: score += 10
             score -= features.get('efc', 0) * 10
             
         elif modality == 'ct':
-            if features.get('noise_floor', 0) < 50: score += 10
+            if features.get('quantum_mottle', 0) < 50: score += 10
             if features.get('air_deviation', 100) < 10: score += 10
             
         elif modality == 'us':

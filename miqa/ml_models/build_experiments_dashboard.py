@@ -1,6 +1,6 @@
 """Build HTML de acompanhamento de experimentos MIQA.
 
-Dashboard interativo que mostra todos os experimentos, resultados e modelos.
+Dashboard interativo que mostra todos os experimentos de modelos lightweight.
 """
 from __future__ import annotations
 import json
@@ -29,30 +29,22 @@ def collect_experiments() -> list[dict]:
                 continue
             body_part = body_part_dir.name
             
-            # Procura checkpoints
-            for ckpt_file in body_part_dir.glob("*.pt"):
-                model_name = ckpt_file.stem
-                
-                # Carrega metadata do registry
-                registry_file = ROOT / "ml_models" / "model_registry.json"
-                config = {}
-                if registry_file.exists():
-                    registry = json.loads(registry_file.read_text())
-                    config = registry.get(f"{modality}/{body_part}/{model_name}", {})
-                
-                # Carrega histórico
-                history_file = body_part_dir / "training_history.json"
-                history = {}
-                if history_file.exists():
-                    history = json.loads(history_file.read_text())
+            # Procura metadados
+            for meta_file in body_part_dir.glob("*_metadata.json"):
+                model_type = meta_file.stem.replace("_metadata", "")
+                meta = json.loads(meta_file.read_text())
                 
                 experiments.append({
                     "modality": modality,
                     "body_part": body_part,
-                    "model_name": model_name,
-                    "config": config,
-                    "history": history,
-                    "ckpt_path": str(ckpt_file),
+                    "model_name": model_type,
+                    "val_mae": meta.get("val_mae", "N/A"),
+                    "val_r2": meta.get("val_r2", "N/A"),
+                    "train_mae": meta.get("train_mae", "N/A"),
+                    "train_r2": meta.get("train_r2", "N/A"),
+                    "n_samples": meta.get("n_samples", "N/A"),
+                    "n_features": meta.get("n_features", "N/A"),
+                    "model_type": meta.get("model_type", "N/A"),
                 })
     
     return experiments
@@ -72,13 +64,16 @@ def generate_html(experiments: list[dict]) -> str:
         mod = exp["modality"].upper()
         bp = exp["body_part"]
         name = exp["model_name"]
-        cfg = exp["config"]
-        hist = exp["history"]
         
-        # Últimos valores
-        val_mae = hist.get("val_mae", ["N/A"])[-1] if hist else "N/A"
-        val_loss = hist.get("val_loss", ["N/A"])[-1] if hist else "N/A"
-        epochs = len(hist.get("train_loss", [])) if hist else 0
+        val_mae = exp.get("val_mae", "N/A")
+        val_r2 = exp.get("val_r2", "N/A")
+        n_samples = exp.get("n_samples", "N/A")
+        n_features = exp.get("n_features", "N/A")
+        model_type = exp.get("model_type", "N/A")
+        
+        # Formata valores
+        val_mae_str = f"{val_mae:.2f}" if isinstance(val_mae, (int, float)) else str(val_mae)
+        val_r2_str = f"{val_r2:.3f}" if isinstance(val_r2, (int, float)) else str(val_r2)
         
         card = f"""
         <div class="exp-card" data-modality="{exp['modality']}" data-body-part="{bp}">
@@ -90,37 +85,29 @@ def generate_html(experiments: list[dict]) -> str:
             <div class="exp-metrics">
                 <div class="metric">
                     <span class="metric-label">Val MAE</span>
-                    <span class="metric-value"{' style="color:var(--success)"' if val_mae != "N/A" and val_mae < 10 else ''}>{val_mae:.2f}</span>
+                    <span class="metric-value"{' style="color:var(--success)"' if isinstance(val_mae, (int, float)) and val_mae < 10 else ''}>{val_mae_str}</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-label">Val Loss</span>
-                    <span class="metric-value">{val_loss:.4f}</span>
+                    <span class="metric-label">Val R²</span>
+                    <span class="metric-value">{val_r2_str}</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-label">Epochs</span>
-                    <span class="metric-value">{epochs}</span>
+                    <span class="metric-label">Amostras</span>
+                    <span class="metric-value">{n_samples}</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-label">Backbone</span>
-                    <span class="metric-value">{cfg.get('backbone', 'N/A')}</span>
+                    <span class="metric-label">Features</span>
+                    <span class="metric-value">{n_features}</span>
                 </div>
             </div>
             <div class="exp-details">
                 <div class="detail-row">
-                    <span class="detail-label">Head:</span>
-                    <span class="detail-value">{cfg.get('head', 'N/A')}</span>
+                    <span class="detail-label">Tipo:</span>
+                    <span class="detail-value">{model_type}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">LR:</span>
-                    <span class="detail-value">{cfg.get('lr', 'N/A')}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Batch:</span>
-                    <span class="detail-value">{cfg.get('batch_size', 'N/A')}</span>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-label">Train/Val:</span>
-                    <span class="detail-value">{cfg.get('n_train', 'N/A')} / {cfg.get('n_val', 'N/A')}</span>
+                    <span class="detail-label">Modo:</span>
+                    <span class="detail-value">CPU Lightweight</span>
                 </div>
             </div>
         </div>"""
@@ -333,6 +320,22 @@ body {{
   grid-column: 1 / -1;
 }}
 
+.info-box {{
+  background: var(--white);
+  border-left: 4px solid var(--success);
+  padding: 20px;
+  margin-bottom: 40px;
+  border-radius: 4px;
+}}
+.info-box h3 {{
+  color: var(--navy);
+  margin-bottom: 8px;
+}}
+.info-box p {{
+  color: var(--gray-600);
+  font-size: 14px;
+}}
+
 .footer {{
   margin-top: 60px;
   padding-top: 30px;
@@ -352,7 +355,13 @@ body {{
 
 <div class="header">
   <h1>MIQA <span>·</span> Experimentos</h1>
-  <p>Dashboard de acompanhamento de modelos ML para Quality Assessment</p>
+  <p>Dashboard de acompanhamento de modelos ML lightweight para Quality Assessment</p>
+</div>
+
+<div class="info-box">
+  <h3>🚀 CPU-Only Lightweight Models</h3>
+  <p>Nenhuma rede neural. Modelos baseados em features físicas + Random Forest/XGBoost.
+     Tempo de inferência < 50ms por imagem em CPU. Sem dependência de GPU.</p>
 </div>
 
 <div class="stats-grid">
@@ -376,7 +385,7 @@ body {{
 
 <div class="footer">
   MIQA Backend Local · WingsAI · {datetime.now().strftime('%Y-%m-%d %H:%M')}<br>
-  Teacher: métricas físicas · Student: CNN (ResNet/EfficientNet)
+  CPU-Only · Random Forest · XGBoost · Ridge Regression
 </div>
 
 <script>

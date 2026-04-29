@@ -1,0 +1,21 @@
+{
+  "model_type": "rf",
+  "modality": "rx",
+  "body_part": "chest",
+  "val_mae": 6.11584968416201,
+  "val_r2": 0.8607672086161511,
+  "train_mae": 2.691003515621885,
+  "train_r2": 0.9778199603286526,
+  "n_samples": 600,
+  "n_features": 7,
+  "feature_names": [
+    "u_niqe",
+    "u_brisque",
+    "img_mean",
+    "img_std",
+    "img_entropy",
+    "a_rx_skull.penetration_index",
+    "a_rx_skull.sinus_air_score"
+  ],
+  "n_augments": 2
+}

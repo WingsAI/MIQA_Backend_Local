@@ -1,0 +1,25 @@
+{
+  "model_type": "rf",
+  "modality": "ct",
+  "body_part": "chest",
+  "val_mae": 0.6109843884024034,
+  "val_r2": 0.9623227835031936,
+  "train_mae": 0.16870316739225483,
+  "train_r2": 0.9983949760949177,
+  "n_samples": 200,
+  "n_features": 11,
+  "feature_names": [
+    "u_niqe",
+    "u_brisque",
+    "a_rx_chest.lung_symmetry",
+    "a_rx_chest.inspiration_index",
+    "a_rx_chest.mediastinum_width",
+    "a_rx_chest.rotation_angle",
+    "img_mean",
+    "img_std",
+    "img_entropy",
+    "a_rx_skull.penetration_index",
+    "a_rx_skull.sinus_air_score"
+  ],
+  "n_augments": 2
+}

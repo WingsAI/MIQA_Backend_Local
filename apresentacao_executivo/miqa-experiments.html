@@ -203,6 +203,22 @@ body {
   grid-column: 1 / -1;
 }
 
+.info-box {
+  background: var(--white);
+  border-left: 4px solid var(--success);
+  padding: 20px;
+  margin-bottom: 40px;
+  border-radius: 4px;
+}
+.info-box h3 {
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+.info-box p {
+  color: var(--gray-600);
+  font-size: 14px;
+}
+
 .footer {
   margin-top: 60px;
   padding-top: 30px;
@@ -222,13 +238,19 @@ body {
 
 <div class="header">
   <h1>MIQA <span>·</span> Experimentos</h1>
-  <p>Dashboard de acompanhamento de modelos ML para Quality Assessment</p>
+  <p>Dashboard de acompanhamento de modelos ML lightweight para Quality Assessment</p>
+</div>
+
+<div class="info-box">
+  <h3>🚀 CPU-Only Lightweight Models</h3>
+  <p>Nenhuma rede neural. Modelos baseados em features físicas + Random Forest/XGBoost.
+     Tempo de inferência < 50ms por imagem em CPU. Sem dependência de GPU.</p>
 </div>
 
 <div class="stats-grid">
-  <div class="stat-card"><div class="number">0</div><div class="label">Modalidades</div></div>
-  <div class="stat-card"><div class="number">0</div><div class="label">Contextos Anatômicos</div></div>
-  <div class="stat-card"><div class="number">0</div><div class="label">Modelos Treinados</div></div>
+  <div class="stat-card"><div class="number">4</div><div class="label">Modalidades</div></div>
+  <div class="stat-card"><div class="number">4</div><div class="label">Contextos Anatômicos</div></div>
+  <div class="stat-card"><div class="number">4</div><div class="label">Modelos Treinados</div></div>
   <div class="stat-card"><div class="number">21</div><div class="label">Métricas Físicas</div></div>
 </div>
 
@@ -241,12 +263,155 @@ body {
 </div>
 
 <div class="exp-grid" id="expGrid">
-  <p class='no-data'>Nenhum experimento encontrado. Execute o treinamento primeiro.</p>
+  
+        <div class="exp-card" data-modality="us" data-body-part="breast">
+            <div class="exp-header">
+                <span class="modality-badge mod-us">US</span>
+                <span class="body-part">breast</span>
+                <span class="model-name">rf</span>
+            </div>
+            <div class="exp-metrics">
+                <div class="metric">
+                    <span class="metric-label">Val MAE</span>
+                    <span class="metric-value" style="color:var(--success)">0.20</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Val R²</span>
+                    <span class="metric-value">0.999</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Amostras</span>
+                    <span class="metric-value">404</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Features</span>
+                    <span class="metric-value">13</span>
+                </div>
+            </div>
+            <div class="exp-details">
+                <div class="detail-row">
+                    <span class="detail-label">Tipo:</span>
+                    <span class="detail-value">rf</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Modo:</span>
+                    <span class="detail-value">CPU Lightweight</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="exp-card" data-modality="ct" data-body-part="chest">
+            <div class="exp-header">
+                <span class="modality-badge mod-ct">CT</span>
+                <span class="body-part">chest</span>
+                <span class="model-name">rf</span>
+            </div>
+            <div class="exp-metrics">
+                <div class="metric">
+                    <span class="metric-label">Val MAE</span>
+                    <span class="metric-value" style="color:var(--success)">0.61</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Val R²</span>
+                    <span class="metric-value">0.962</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Amostras</span>
+                    <span class="metric-value">200</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Features</span>
+                    <span class="metric-value">11</span>
+                </div>
+            </div>
+            <div class="exp-details">
+                <div class="detail-row">
+                    <span class="detail-label">Tipo:</span>
+                    <span class="detail-value">rf</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Modo:</span>
+                    <span class="detail-value">CPU Lightweight</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="exp-card" data-modality="mri" data-body-part="brain">
+            <div class="exp-header">
+                <span class="modality-badge mod-mri">MRI</span>
+                <span class="body-part">brain</span>
+                <span class="model-name">rf</span>
+            </div>
+            <div class="exp-metrics">
+                <div class="metric">
+                    <span class="metric-label">Val MAE</span>
+                    <span class="metric-value" style="color:var(--success)">1.77</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Val R²</span>
+                    <span class="metric-value">0.843</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Amostras</span>
+                    <span class="metric-value">200</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Features</span>
+                    <span class="metric-value">13</span>
+                </div>
+            </div>
+            <div class="exp-details">
+                <div class="detail-row">
+                    <span class="detail-label">Tipo:</span>
+                    <span class="detail-value">rf</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Modo:</span>
+                    <span class="detail-value">CPU Lightweight</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="exp-card" data-modality="rx" data-body-part="chest">
+            <div class="exp-header">
+                <span class="modality-badge mod-rx">RX</span>
+                <span class="body-part">chest</span>
+                <span class="model-name">rf</span>
+            </div>
+            <div class="exp-metrics">
+                <div class="metric">
+                    <span class="metric-label">Val MAE</span>
+                    <span class="metric-value" style="color:var(--success)">6.12</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Val R²</span>
+                    <span class="metric-value">0.861</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Amostras</span>
+                    <span class="metric-value">600</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Features</span>
+                    <span class="metric-value">7</span>
+                </div>
+            </div>
+            <div class="exp-details">
+                <div class="detail-row">
+                    <span class="detail-label">Tipo:</span>
+                    <span class="detail-value">rf</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Modo:</span>
+                    <span class="detail-value">CPU Lightweight</span>
+                </div>
+            </div>
+        </div>
 </div>
 
 <div class="footer">
-  MIQA Backend Local · WingsAI · 2026-04-29 15:50<br>
-  Teacher: métricas físicas · Student: CNN (ResNet/EfficientNet)
+  MIQA Backend Local · WingsAI · 2026-04-29 16:17<br>
+  CPU-Only · Random Forest · XGBoost · Ridge Regression
 </div>
 
 <script>

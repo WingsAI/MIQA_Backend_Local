@@ -1,0 +1,27 @@
+{
+  "model_type": "rf",
+  "modality": "us",
+  "body_part": "breast",
+  "val_mae": 0.20134996542189149,
+  "val_r2": 0.9990481495515432,
+  "train_mae": 0.09809037754108446,
+  "train_r2": 0.9998533571604483,
+  "n_samples": 404,
+  "n_features": 13,
+  "feature_names": [
+    "u_niqe",
+    "u_brisque",
+    "img_mean",
+    "img_std",
+    "img_entropy",
+    "a_rx_chest.lung_symmetry",
+    "a_rx_chest.inspiration_index",
+    "a_rx_chest.mediastinum_width",
+    "a_rx_chest.rotation_angle",
+    "a_rx_skull.penetration_index",
+    "a_rx_skull.sinus_air_score",
+    "a_rx_abdomen.nps_fat",
+    "a_rx_abdomen.free_air_detector"
+  ],
+  "n_augments": 2
+}

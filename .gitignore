@@ -9,3 +9,18 @@ miqa/logs/
 *.pyc
 .DS_Store
 .venv/
+
+# Datasets (não commitar — grandes)
+data/
+MIQA_datasets/
+kaggle_datasets/
+*.zip
+*.tar.gz
+
+# Model checkpoints grandes
+miqa/ml_models/checkpoints/**/*.pt
+miqa/ml_models/checkpoints/**/*.pkl
+miqa/ml_models/checkpoints/**/*.joblib
+
+# Teacher scores cache
+miqa/ml_models/checkpoints/**/teacher_scores.json
