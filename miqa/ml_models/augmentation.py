@@ -137,16 +137,27 @@ class Augmenter:
             return cv2.warpAffine(img, M, (w, h), borderMode=cv2.BORDER_REFLECT)
         
         elif deg_type == 'scale':
-            scale = 0.95 + severity * 0.1
+            scale = 0.9 + severity * 0.2  # 0.9 a 1.1
             h, w = img.shape
             new_h, new_w = int(h * scale), int(w * scale)
             resized = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_LINEAR)
-            # Centraliza com padding
-            result = np.zeros_like(img)
-            y_offset = (h - new_h) // 2
-            x_offset = (w - new_w) // 2
-            result[y_offset:y_offset+new_h, x_offset:x_offset+new_w] = resized
-            return result
+            
+            if scale <= 1.0:
+                # Imagem menor: centraliza com padding
+                result = np.zeros_like(img)
+                y_offset = max(0, (h - new_h) // 2)
+                x_offset = max(0, (w - new_w) // 2)
+                y_end = min(h, y_offset + new_h)
+                x_end = min(w, x_offset + new_w)
+                ry_end = min(new_h, y_end - y_offset)
+                rx_end = min(new_w, x_end - x_offset)
+                result[y_offset:y_end, x_offset:x_end] = resized[0:ry_end, 0:rx_end]
+                return result
+            else:
+                # Imagem maior: crop central
+                y_offset = max(0, (new_h - h) // 2)
+                x_offset = max(0, (new_w - w) // 2)
+                return resized[y_offset:y_offset+h, x_offset:x_offset+w]
         
         elif deg_type == 'ring_artifact':
             # Artefato em anel (comum em CT)
