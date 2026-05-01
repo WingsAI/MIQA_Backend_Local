@@ -1,0 +1,14 @@
+{
+  "n_samples": 300,
+  "score_mean": 29.043898627650815,
+  "score_std": 29.822147712545988,
+  "score_min": 0.0,
+  "score_max": 69.43459799185611,
+  "score_median": 0.0,
+  "score_q25": 0.0,
+  "score_q75": 58.90574705725833,
+  "score_iqr": 58.90574705725833,
+  "n_outliers_low": 0,
+  "n_outliers_high": 0,
+  "pct_outliers": 0.0
+}

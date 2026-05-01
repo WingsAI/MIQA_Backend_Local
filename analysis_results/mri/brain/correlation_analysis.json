@@ -1,0 +1,46 @@
+{
+  "class_stats": {
+    "count": {
+      "glioma": 100,
+      "meningioma": 115,
+      "no_tumor": 85
+    },
+    "mean": {
+      "glioma": 66.6,
+      "meningioma": 68.92,
+      "no_tumor": 68.5
+    },
+    "std": {
+      "glioma": 6.66,
+      "meningioma": 9.81,
+      "no_tumor": 7.92
+    },
+    "min": {
+      "glioma": 51.06,
+      "meningioma": 39.67,
+      "no_tumor": 49.7
+    },
+    "max": {
+      "glioma": 85.83,
+      "meningioma": 92.12,
+      "no_tumor": 83.57
+    }
+  },
+  "anova_f": 2.265822234425185,
+  "anova_p": 0.1055352717633127,
+  "feature_correlations": {
+    "u_brisque": -0.3140075132919067,
+    "img_entropy": -0.2716115919646818,
+    "u_niqe": -0.023416299680116874,
+    "a_rx_skull.penetration_index": NaN,
+    "a_rx_skull.sinus_air_score": NaN,
+    "a_rx_abdomen.nps_fat": NaN,
+    "a_rx_abdomen.free_air_detector": NaN,
+    "a_rx_chest.lung_symmetry": NaN,
+    "a_rx_chest.inspiration_index": NaN,
+    "a_rx_chest.mediastinum_width": NaN,
+    "a_rx_chest.rotation_angle": NaN,
+    "img_std": 0.1125298611757516,
+    "img_mean": -0.05071982874364578
+  }
+}

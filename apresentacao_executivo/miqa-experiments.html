@@ -250,7 +250,7 @@ body {
 <div class="stats-grid">
   <div class="stat-card"><div class="number">4</div><div class="label">Modalidades</div></div>
   <div class="stat-card"><div class="number">4</div><div class="label">Contextos Anatômicos</div></div>
-  <div class="stat-card"><div class="number">4</div><div class="label">Modelos Treinados</div></div>
+  <div class="stat-card"><div class="number">8</div><div class="label">Modelos Treinados</div></div>
   <div class="stat-card"><div class="number">21</div><div class="label">Métricas Físicas</div></div>
 </div>
 
@@ -264,6 +264,42 @@ body {
 
 <div class="exp-grid" id="expGrid">
   
+        <div class="exp-card" data-modality="us" data-body-part="breast">
+            <div class="exp-header">
+                <span class="modality-badge mod-us">US</span>
+                <span class="body-part">breast</span>
+                <span class="model-name">rf_v2</span>
+            </div>
+            <div class="exp-metrics">
+                <div class="metric">
+                    <span class="metric-label">Val MAE</span>
+                    <span class="metric-value" style="color:var(--success)">3.94</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Val R²</span>
+                    <span class="metric-value">0.909</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Amostras</span>
+                    <span class="metric-value">4680</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Features</span>
+                    <span class="metric-value">13</span>
+                </div>
+            </div>
+            <div class="exp-details">
+                <div class="detail-row">
+                    <span class="detail-label">Tipo:</span>
+                    <span class="detail-value">rf</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Modo:</span>
+                    <span class="detail-value">CPU Lightweight</span>
+                </div>
+            </div>
+        </div>
+
         <div class="exp-card" data-modality="us" data-body-part="breast">
             <div class="exp-header">
                 <span class="modality-badge mod-us">US</span>
@@ -286,6 +322,42 @@ body {
                 <div class="metric">
                     <span class="metric-label">Features</span>
                     <span class="metric-value">13</span>
+                </div>
+            </div>
+            <div class="exp-details">
+                <div class="detail-row">
+                    <span class="detail-label">Tipo:</span>
+                    <span class="detail-value">rf</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Modo:</span>
+                    <span class="detail-value">CPU Lightweight</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="exp-card" data-modality="ct" data-body-part="chest">
+            <div class="exp-header">
+                <span class="modality-badge mod-ct">CT</span>
+                <span class="body-part">chest</span>
+                <span class="model-name">rf_v2</span>
+            </div>
+            <div class="exp-metrics">
+                <div class="metric">
+                    <span class="metric-label">Val MAE</span>
+                    <span class="metric-value" style="color:var(--success)">6.97</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Val R²</span>
+                    <span class="metric-value">0.862</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Amostras</span>
+                    <span class="metric-value">8000</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Features</span>
+                    <span class="metric-value">11</span>
                 </div>
             </div>
             <div class="exp-details">
@@ -340,6 +412,42 @@ body {
             <div class="exp-header">
                 <span class="modality-badge mod-mri">MRI</span>
                 <span class="body-part">brain</span>
+                <span class="model-name">rf_v2</span>
+            </div>
+            <div class="exp-metrics">
+                <div class="metric">
+                    <span class="metric-label">Val MAE</span>
+                    <span class="metric-value" style="color:var(--success)">8.09</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Val R²</span>
+                    <span class="metric-value">0.768</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Amostras</span>
+                    <span class="metric-value">7999</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Features</span>
+                    <span class="metric-value">13</span>
+                </div>
+            </div>
+            <div class="exp-details">
+                <div class="detail-row">
+                    <span class="detail-label">Tipo:</span>
+                    <span class="detail-value">rf</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Modo:</span>
+                    <span class="detail-value">CPU Lightweight</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="exp-card" data-modality="mri" data-body-part="brain">
+            <div class="exp-header">
+                <span class="modality-badge mod-mri">MRI</span>
+                <span class="body-part">brain</span>
                 <span class="model-name">rf</span>
             </div>
             <div class="exp-metrics">
@@ -358,6 +466,42 @@ body {
                 <div class="metric">
                     <span class="metric-label">Features</span>
                     <span class="metric-value">13</span>
+                </div>
+            </div>
+            <div class="exp-details">
+                <div class="detail-row">
+                    <span class="detail-label">Tipo:</span>
+                    <span class="detail-value">rf</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Modo:</span>
+                    <span class="detail-value">CPU Lightweight</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="exp-card" data-modality="rx" data-body-part="chest">
+            <div class="exp-header">
+                <span class="modality-badge mod-rx">RX</span>
+                <span class="body-part">chest</span>
+                <span class="model-name">rf_v2</span>
+            </div>
+            <div class="exp-metrics">
+                <div class="metric">
+                    <span class="metric-label">Val MAE</span>
+                    <span class="metric-value" style="color:var(--success)">8.59</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Val R²</span>
+                    <span class="metric-value">0.828</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Amostras</span>
+                    <span class="metric-value">8000</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Features</span>
+                    <span class="metric-value">7</span>
                 </div>
             </div>
             <div class="exp-details">
@@ -410,7 +554,7 @@ body {
 </div>
 
 <div class="footer">
-  MIQA Backend Local · WingsAI · 2026-04-30 21:22<br>
+  MIQA Backend Local · WingsAI · 2026-05-01 09:42<br>
   CPU-Only · Random Forest · XGBoost · Ridge Regression
 </div>
 
