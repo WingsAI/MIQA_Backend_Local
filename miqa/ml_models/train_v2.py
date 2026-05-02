@@ -78,6 +78,14 @@ def train_v2(modality: str, body_part: str, dataset_path: Path,
         if img.ndim == 3:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
+        # Resize para acelerar processamento (mantém proporção até max 512px)
+        h, w = img.shape[:2]
+        max_dim = 512
+        if max(h, w) > max_dim:
+            scale = max_dim / max(h, w)
+            new_h, new_w = int(h * scale), int(w * scale)
+            img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_AREA)
+        
         # Normaliza
         a, b = float(img.min()), float(img.max())
         img_norm = ((img - a) / max(b - a, 1e-9)).astype(np.float32)

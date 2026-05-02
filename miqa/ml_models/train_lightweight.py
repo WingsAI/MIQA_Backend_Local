@@ -80,6 +80,15 @@ def extract_features(img_path: Path, modality: str) -> dict:
         features["img_std"] = float(img_norm.std())
         features["img_entropy"] = float(_compute_entropy(img_norm))
         
+        # Métricas avançadas (auto-research)
+        try:
+            from miqa.anatomy.metrics_advanced import compute_advanced_metrics
+            advanced = compute_advanced_metrics(img_norm, modality)
+            for name, value in advanced.items():
+                features[f"adv_{name}"] = value
+        except Exception:
+            pass
+        
         return features
     except Exception as e:
         print(f"  Erro extraindo features de {img_path.name}: {e}")
