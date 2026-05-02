@@ -270,7 +270,7 @@ def main():
     ap.add_argument("--dataset_path", required=True, type=Path)
     ap.add_argument("--model_type", default="rf", choices=["rf", "xgb", "ridge"])
     ap.add_argument("--n_augmented", type=int, default=5)
-    ap.add_argument("--max_images", type=int, default=500)
+    ap.add_argument("--max_images", type=int, default=None)
     
     args = ap.parse_args()
     
