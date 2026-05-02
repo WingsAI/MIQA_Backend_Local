@@ -1,0 +1,100 @@
+{
+  "timestamp": "2026-05-02T01:31:47.054624",
+  "models_analyzed": [],
+  "suggested_metrics": {
+    "rx": [
+      {
+        "name": "clavicle_symmetry",
+        "description": "Simetria da clav\u00edcula (indica rota\u00e7\u00e3o)",
+        "rationale": "RX rotacionado reduz visibilidade de patologias",
+        "implementation": "Detec\u00e7\u00e3o de bordas + correla\u00e7\u00e3o E/D",
+        "priority": "high"
+      },
+      {
+        "name": "rib_count_visibility",
+        "description": "N\u00famero de costelas vis\u00edveis acima do diafragma",
+        "rationale": "Indica profundidade de inspira\u00e7\u00e3o (PAD)",
+        "implementation": "Detec\u00e7\u00e3o de bordas horizontais + contagem",
+        "priority": "high"
+      },
+      {
+        "name": "cardiothoracic_ratio",
+        "description": "Raz\u00e3o cardiotor\u00e1cica",
+        "rationale": "Cardiomegalia afeta qualidade t\u00e9cnica do RX",
+        "implementation": "Segmenta\u00e7\u00e3o do cora\u00e7\u00e3o / largura do t\u00f3rax",
+        "priority": "medium"
+      },
+      {
+        "name": "costophrenic_angle_sharpness",
+        "description": "Nitidez dos \u00e2ngulos costofr\u00eanicos",
+        "rationale": "\u00c2ngulos obliterados indicam derrame ou m\u00e1 t\u00e9cnica",
+        "implementation": "Detector de cantos + medida de sharpness",
+        "priority": "medium"
+      }
+    ],
+    "us": [
+      {
+        "name": "contact_quality_index",
+        "description": "Qualidade do contato gel-sonda-pele",
+        "rationale": "Mau contato gera sombras ac\u00fasticas",
+        "implementation": "An\u00e1lise de regi\u00f5es pretas na superf\u00edcie",
+        "priority": "high"
+      },
+      {
+        "name": "depth_penetration_ratio",
+        "description": "Raz\u00e3o de penetra\u00e7\u00e3o vs ganho",
+        "rationale": "Ganho excessivo com penetra\u00e7\u00e3o ruim = ru\u00eddo",
+        "implementation": "Histograma vertical + an\u00e1lise de SNR por profundidade",
+        "priority": "high"
+      }
+    ],
+    "ct": [
+      {
+        "name": "hu_uniformity",
+        "description": "Uniformidade de HU em regi\u00f5es homog\u00eaneas",
+        "rationale": "Varia\u00e7\u00e3o excessiva indica ru\u00eddo ou artefato",
+        "implementation": "ROI em m\u00fasculo/par\u00eanquima + std HU",
+        "priority": "high"
+      },
+      {
+        "name": "slice_thickness_consistency",
+        "description": "Consist\u00eancia da espessura do slice",
+        "rationale": "Varia\u00e7\u00e3o indica erro no protocolo",
+        "implementation": "Metadados DICOM + verifica\u00e7\u00e3o",
+        "priority": "high"
+      },
+      {
+        "name": "streak_artifact_detector",
+        "description": "Detector de artefatos em linha (metal)",
+        "rationale": "Artefatos de metal degradam imagem",
+        "implementation": "Transformada de Hough + detec\u00e7\u00e3o de linhas radiais",
+        "priority": "medium"
+      }
+    ],
+    "mri": [
+      {
+        "name": "ghosting_artifact_index",
+        "description": "\u00cdndice de ghosting (movimento)",
+        "rationale": "Movimento do paciente \u00e9 principal artefato",
+        "implementation": "An\u00e1lise de repeti\u00e7\u00e3o peri\u00f3dica no k-space",
+        "priority": "high"
+      },
+      {
+        "name": "signal_uniformity_map",
+        "description": "Mapa de uniformidade do sinal",
+        "rationale": "Coil ruim gera hotspots/coldspots",
+        "implementation": "Filtro passa-baixa + an\u00e1lise de varia\u00e7\u00e3o espacial",
+        "priority": "high"
+      }
+    ]
+  },
+  "recommendations": [
+    "Implementar m\u00e9tricas de symmetria para RX (clavicle_symmetry, lung_symmetry)",
+    "Adicionar detec\u00e7\u00e3o de ghosting em MRI",
+    "Criar \u00edndice de qualidade de contato para US",
+    "Implementar detector de streak artifacts em CT",
+    "Coletar labels de radiologistas para valida\u00e7\u00e3o cl\u00ednica",
+    "Testar ensemble de modelos (RF + XGBoost + Ridge)",
+    "Implementar calibra\u00e7\u00e3o de threshold com Isotonic Regression"
+  ]
+}

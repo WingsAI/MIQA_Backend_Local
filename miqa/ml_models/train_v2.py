@@ -51,10 +51,13 @@ def train_v2(modality: str, body_part: str, dataset_path: Path,
     print(f"Max imagens: {max_images}")
     print(f"{'='*70}\n")
     
-    # Encontra imagens
+    # Encontra imagens (ignora arquivos de sistema macOS)
     image_paths = []
     for ext in ["*.jpg", "*.jpeg", "*.png"]:
-        image_paths.extend(dataset_path.rglob(ext))
+        for p in dataset_path.rglob(ext):
+            # Ignora arquivos do macOS resource fork (__MACOSX/._*)
+            if "__MACOSX" not in str(p) and not p.name.startswith("._"):
+                image_paths.append(p)
     
     image_paths = sorted(image_paths)[:max_images]
     print(f"Encontradas {len(image_paths)} imagens originais")
