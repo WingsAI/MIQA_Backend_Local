@@ -17,10 +17,26 @@ kaggle_datasets/
 *.zip
 *.tar.gz
 
-# Model checkpoints grandes
-miqa/ml_models/checkpoints/**/*.pt
-miqa/ml_models/checkpoints/**/*.pkl
-miqa/ml_models/checkpoints/**/*.joblib
+# Model checkpoints e outputs gerados (reproduzíveis)
+miqa/ml_models/checkpoints/
+analysis_results/
 
-# Teacher scores cache
-miqa/ml_models/checkpoints/**/teacher_scores.json
+# Formatos de dados/modelos
+*.pt
+*.pth
+*.pkl
+*.pickle
+*.joblib
+*.h5
+*.hdf5
+*.ckpt
+*.bin
+*.safetensors
+*.npy
+*.npz
+*.csv
+*.parquet
+*.feather
+*.nii
+*.nii.gz
+*.dcm
