@@ -382,7 +382,7 @@
   </div>
 
   <div class="section-eyebrow">CPU-Only · Sem Redes Neurais</div>
-  <h2>15 modelos disponíveis em produção; 7 novos RX treinados com 100% dos datasets ósseos baixados.</h2>
+  <h2>17 modelos disponíveis em produção; 7 novos RX e 2 novos US treinados com 100% dos datasets baixados.</h2>
 
   <p class="lead">REGRA DO PROJETO: nenhuma rede neural. Apenas modelos leves em CPU (Random Forest, XGBoost, Ridge). Inferência &lt; 50ms por imagem. Sem dependência de GPU. Modelos são pré-carregados no startup para evitar cold start.</p>
 
@@ -397,7 +397,7 @@
   </div>
   <div class="insight-box">
     <div class="ttl">Treino 2026-05-06 — 100% dos dados originais</div>
-    A rodada óssea RX usou todos os arquivos dos três datasets baixados, sem multiplicação sintética (<code>n_augments=0</code>). As degradações controladas continuam disponíveis para experimentos, mas esta rodada preserva a contagem real de imagens originais.
+    As rodadas óssea RX e ultrassom usaram todos os arquivos dos datasets baixados, sem multiplicação sintética (<code>n_augments=0</code>). As degradações controladas continuam disponíveis para experimentos, mas esta rodada preserva a contagem real de imagens originais.
   </div>
 
   <h3>Resultados dos Treinamentos</h3>
@@ -412,6 +412,8 @@
     <tr><td>RX</td><td>Ossos/fratura YOLO</td><td>Bone Fracture YOLO</td><td class="num">1,539</td><td class="num">0.50</td><td class="num">0.971</td><td style="color:var(--success)">✓ Produção</td></tr>
     <tr><td>RX</td><td>Ossos/fratura binária</td><td>Bone Fracture Binary</td><td class="num">10,581</td><td class="num">0.09</td><td class="num">1.000</td><td style="color:var(--success)">✓ Produção</td></tr>
     <tr><td>US</td><td>Mama</td><td>BUSI</td><td class="num">780</td><td class="num">0.20</td><td class="num">0.999</td><td style="color:var(--success)">✓ Treinado</td></tr>
+    <tr><td>US</td><td>Fígado</td><td>Annotated Ultrasound Liver</td><td class="num">735</td><td class="num">0.60</td><td class="num">0.966</td><td style="color:var(--success)">✓ Produção</td></tr>
+    <tr><td>US</td><td>Rim</td><td>Kidney Failure Ultrasound</td><td class="num">134</td><td class="num">0.28</td><td class="num">0.924</td><td style="color:var(--success)">✓ Produção</td></tr>
     <tr><td>CT</td><td>Tórax</td><td>COVID CT Scans</td><td class="num">2,000</td><td class="num">0.61</td><td class="num">0.962</td><td style="color:var(--success)">✓ Treinado</td></tr>
     <tr><td>MRI</td><td>Cérebro</td><td>Brain Tumor MRI</td><td class="num">3,000</td><td class="num">1.77</td><td class="num">0.843</td><td style="color:var(--success)">✓ Treinado</td></tr>
   </table>

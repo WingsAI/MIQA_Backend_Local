@@ -249,8 +249,8 @@ body {
 
 <div class="stats-grid">
   <div class="stat-card"><div class="number">4</div><div class="label">Modalidades</div></div>
-  <div class="stat-card"><div class="number">11</div><div class="label">Contextos Anatômicos</div></div>
-  <div class="stat-card"><div class="number">15</div><div class="label">Modelos Treinados</div></div>
+  <div class="stat-card"><div class="number">13</div><div class="label">Contextos Anatômicos</div></div>
+  <div class="stat-card"><div class="number">17</div><div class="label">Modelos Treinados</div></div>
   <div class="stat-card"><div class="number">21</div><div class="label">Métricas Físicas</div></div>
 </div>
 
@@ -333,6 +333,42 @@ body {
                     <span class="detail-label">Modo:</span>
                     <span class="detail-value">CPU Lightweight</span>
                 </div>
+            </div>
+        </div>
+
+        <div class="exp-card" data-modality="us" data-body-part="liver">
+            <div class="exp-header">
+                <span class="modality-badge mod-us">US</span>
+                <span class="body-part">liver</span>
+                <span class="model-name">rf</span>
+            </div>
+            <div class="exp-metrics">
+                <div class="metric"><span class="metric-label">Val MAE</span><span class="metric-value" style="color:var(--success)">0.60</span></div>
+                <div class="metric"><span class="metric-label">Val R²</span><span class="metric-value">0.966</span></div>
+                <div class="metric"><span class="metric-label">Amostras</span><span class="metric-value">735</span></div>
+                <div class="metric"><span class="metric-label">Features</span><span class="metric-value">13</span></div>
+            </div>
+            <div class="exp-details">
+                <div class="detail-row"><span class="detail-label">Tipo:</span><span class="detail-value">rf</span></div>
+                <div class="detail-row"><span class="detail-label">Modo:</span><span class="detail-value">CPU Lightweight · Full Kaggle 100%</span></div>
+            </div>
+        </div>
+
+        <div class="exp-card" data-modality="us" data-body-part="kidney">
+            <div class="exp-header">
+                <span class="modality-badge mod-us">US</span>
+                <span class="body-part">kidney</span>
+                <span class="model-name">rf</span>
+            </div>
+            <div class="exp-metrics">
+                <div class="metric"><span class="metric-label">Val MAE</span><span class="metric-value" style="color:var(--success)">0.28</span></div>
+                <div class="metric"><span class="metric-label">Val R²</span><span class="metric-value">0.924</span></div>
+                <div class="metric"><span class="metric-label">Amostras</span><span class="metric-value">134</span></div>
+                <div class="metric"><span class="metric-label">Features</span><span class="metric-value">10</span></div>
+            </div>
+            <div class="exp-details">
+                <div class="detail-row"><span class="detail-label">Tipo:</span><span class="detail-value">rf</span></div>
+                <div class="detail-row"><span class="detail-label">Modo:</span><span class="detail-value">CPU Lightweight · Full Kaggle 100%</span></div>
             </div>
         </div>
 
@@ -681,7 +717,7 @@ body {
 
 <div class="info-box">
   <h3>Rodada 2026-05-06 · Datasets baixados</h3>
-  <p>Foram usados 100% dos arquivos originais em <code>archive.zip</code>, <code>archive (2).zip</code> e <code>archive (3).zip</code>, sem augmentação sintética. Os checkpoints foram promovidos para o Railway Volume em <code>/data/checkpoints</code>; nenhum <code>.pkl</code> ou dataset é versionado no GitHub. As métricas são aderência ao teacher score físico, não validação clínica por especialista.</p>
+  <p>Foram usados 100% dos arquivos originais em <code>archive.zip</code>, <code>archive (2).zip</code>, <code>archive (3).zip</code>, <code>archive (5).zip</code> e <code>archive (6).zip</code>, sem augmentação sintética. Os checkpoints foram promovidos para o Railway Volume em <code>/data/checkpoints</code>; nenhum <code>.pkl</code> ou dataset é versionado no GitHub. As métricas são aderência ao teacher score físico, não validação clínica por especialista.</p>
 </div>
 
 <div class="footer">
